@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net/url"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -22,12 +22,15 @@ func useSession(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+
+	if ctx.Method() == fiber.MethodPost && strings.HasPrefix(ctx.Path(), "/auth") {
+		ok = true
+	}
+
 	if ok {
 		return ctx.Next()
 	} else {
-		fullUrl := ctx.BaseURL() + ctx.OriginalURL()
-		ctx.Redirect(idUrl +"?redirect="+ url.QueryEscape(fullUrl))
-		return nil
+		return ctx.Redirect(authUrl())
 	}
 }
 

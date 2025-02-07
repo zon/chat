@@ -5,6 +5,7 @@ go 1.23.4
 require (
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gofiber/storage/sqlite3 v1.3.8
+	github.com/golang-jwt/jwt/v5 v5.2.1
 )
 
 require (
