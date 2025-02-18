@@ -8,10 +8,6 @@ const authProtocol string = "http"
 const authHost string = "localhost"
 const authPort string = "8081"
 
-func rootUrl() string {
-	return protocol + "://" + host + ":" + port
-}
-
 func authUrl() string {
 	return authProtocol + "://" + authHost + ":" + authPort + authPath + "/" + appUri
 }

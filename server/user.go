@@ -49,6 +49,5 @@ func postUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	return redirectToIndex(c, user, "Password changed")
-
+	return redirectToIndex(c, user, "Name changed")
 }

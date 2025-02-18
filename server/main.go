@@ -17,11 +17,12 @@ func main() {
 
 	app := fiber.New()
 
+	app.Use(useProxy)
 	app.Use(useSession)
 	app.Get("/", getIndex)
 	app.Post("/auth", postAuth)
 	app.Get("/user/:id", getUser)
-	app.Post("/user/:id", getUser)
+	app.Post("/user/:id", postUser)
 
-	app.Listen(":8080")
+	app.Listen(":"+ port)
 }

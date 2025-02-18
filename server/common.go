@@ -28,28 +28,3 @@ func renderError(ctx *fiber.Ctx, message string) error {
 	ctx.Set("HX-Reswap", "none")
 	return render(ctx, html.OobError(message))
 }
-
-func compact(list []string) []string {
-	result := []string{}
-	for _, item := range list {
-		if item != "" {
-			result = append(result, item)
-		}
-	}
-	return result
-}
-
-func head(list []string) string {
-	if len(list) < 1 {
-		return ""
-	}
-	return list[0]
-}
-
-func tail(list []string) string {
-	c := len(list)
-	if c < 1 {
-		return ""
-	}
-	return list[c-1]
-}
