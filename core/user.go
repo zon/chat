@@ -13,6 +13,10 @@ type User struct {
 	Name string `gorm:"unique"`
 }
 
+func (u *User) IsReady() bool {
+	return u.Name != ""
+}
+
 func (u *User) Url() templ.SafeURL {
 	return templ.SafeURL(UserUrl(u.ID))
 }

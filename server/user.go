@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/a-h/templ"
 	"github.com/gofiber/fiber/v2"
 	"github.com/zon/chat/core"
 	"github.com/zon/chat/html"
@@ -20,7 +21,14 @@ func getUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	layout := html.Layout(html.WeclomeTitle(), html.User(user))
+	var title templ.Component
+	if user.IsReady() {
+		title = html.DefaultTitle()
+	} else {
+		title = html.WeclomeTitle()
+	}
+
+	layout := html.Layout(title, html.User(user))
 	if isHxRequest(c) {
 		return render(c, layout)
 	} else {
@@ -51,6 +59,12 @@ func postUser(c *fiber.Ctx) error {
 
 	user.Name = name
 	err = user.Save()
+	if err != nil {
+		return err
+	}
+
+	session.Ready = true
+	err = session.Save(c)
 	if err != nil {
 		return err
 	}

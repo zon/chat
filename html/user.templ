@@ -2,18 +2,33 @@ package html
 
 import (
 	"github.com/zon/chat/core"
+	"fmt"
 )
 
 templ User(user *core.User) {
-    <p>Set your name. <span class="note">Can be changed at any time.</span></p>
-    <form method="post" action={ user.Url() }>
-        <div class="field">
-            <label for="name">Name</label>
-            <input id="name" name="name" type="text" />
-        </div>
-        @Error("")
-        <div class="actions">
-            <button class="primary" type="submit">Set</button>
-        </div>
-    </form>
+    if user.Name == "" {
+        <p>Set your name. <span class="note">Can be changed at any time.</span></p>
+        <form method="post" action={ user.Url() }>
+            <div class="field">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" />
+            </div>
+            @Error("")
+            <div class="actions">
+                <button class="primary" type="submit">Set</button>
+            </div>
+        </form>
+    } else {
+        <h2>Edit User #{ fmt.Sprintf("%d", user.ID) }</h2>
+        <form method="post" action={ user.Url() }>
+            <div class="field">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" value={ user.Name } />
+            </div>
+            @Error("")
+            <div class="actions">
+                <button class="primary" type="submit">Save</button>
+            </div>
+        </form>
+    }
 }
