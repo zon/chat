@@ -1,0 +1,18 @@
+package html
+
+import (
+	"github.com/zon/chat/core"
+)
+
+templ Index(user *core.User, alert string) {
+    <section id="local-session">
+        <p><a class="button" href={ user.Url() }>{ user.Name }</a></p>
+        <button hx-delete="/login">Logout</button>
+    </section>
+    if alert != "" {
+        <div id="alert">
+            <p>{ alert }</p>
+        </div>
+    }
+    <h2>Index</h2>
+}

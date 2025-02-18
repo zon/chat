@@ -1,0 +1,12 @@
+package html
+
+templ Doc(body templ.Component) {
+	<!doctype html>
+	<html>
+		<head>
+			<title>Chat!</title>
+			@Head()
+		</head>
+		@body
+	</html>
+}

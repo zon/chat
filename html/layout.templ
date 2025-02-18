@@ -1,0 +1,12 @@
+package html
+
+templ Layout(content templ.Component) {
+	<body hx-boost="true">
+		<div id="page">
+			<h1>Chat!</h1>
+			<div id="content">
+				@content
+			</div>
+		</div>
+	</body>
+}

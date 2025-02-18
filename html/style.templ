@@ -1,0 +1,143 @@
+package html
+
+templ Style() {
+    <style>
+        body {
+            font-family: "Noto Sans Mono", serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+            font-variation-settings:
+                "wdth" 150;
+            font-size: 18px;
+            background-color: hsl(0 0% 90%);
+            margin: 0;
+        }
+        #page {
+            margin: auto;
+            max-width: 500px;
+        }
+        h1 {
+            font-weight: 800;
+            color: hsl(0 90% 45%);
+            margin: 1em 2ex;
+            text-transform: uppercase;
+        }
+        h1 span {
+            color: hsl(30 90% 50%);
+        }
+        h1, h2, h3 {
+            font-size: inherit;
+        }
+        #content {
+            margin: 1em 2ex;
+        }
+        #alert {
+            background-color: hsl(120 10% 40%);
+            font-weight: 500;
+            color: white;
+            padding: 0.5em 2ex;
+            margin: 1em 0;
+        }
+        #alert *:first-child {
+            margin-top: 0;
+        }
+        #alert *:last-child {
+            margin-bottom: 0;
+        }
+        form div.field,
+        form div.actions {
+            display: flex;
+            flex-direction: column;
+            margin: 1em 0;
+        }
+        form div#error p {
+            background-color: hsl(0 90% 70%);
+            font-weight: 500;
+            color: white;
+            padding: 0.5em 1ex;
+        }
+        form div#error *:first-child {
+            margin-top: 0;
+        }
+        form div#error *:last-child {
+            margin-bottom: 0;
+        }
+        form div.actions {
+            flex-direction: row-reverse;
+            column-gap: 2ex;
+        }
+        label {
+            display: block;
+            font-weight: 500;
+        }
+        input[type="email"],
+        input[type="password"] {
+            display: block;
+            width: auto;
+            border: none;
+            border-radius: 0;
+            padding: 0.5em 1ex;
+        }
+        input[type="email"],
+        input[type="password"],
+        button {
+            font: inherit;
+        }
+        button, a.button {
+            font-weight: 500;
+            border: 1px solid hsl(0 0% 80%);
+            border-radius: 0;
+            padding: 0.5em 2ex;
+            color: black;
+            text-decoration: none;
+        }
+        button.primary {
+            background-color: hsl(240 90% 70%);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        a.delete {
+            background-color: hsl(0 90% 70%);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        #local-session {
+            display: flex;
+            column-gap: 2ex;
+            align-items: center;
+        }
+        #local-session p {
+            margin: 0;
+            flex-grow: 2;
+        }
+        #sessions {
+            margin: 1em 0;
+        }
+        form.session {
+            display: flex;
+            column-gap: 2ex;
+            align-items: center;
+            border: 2px solid hsl(30 90% 60%);
+            background-color: hsl(30 90% 90%);
+            padding: 0.5em 1ex;
+            padding-left: 2ex;
+            margin: 1em 0;
+        }
+        form.session p {
+            margin: 0;
+            flex-grow: 2;
+        }
+        form.session p span {
+            display: inline-block;
+            background-color: hsl(30 90% 60%);
+            color: white;
+            padding: 0.25em 1ex;
+        }
+        form.session .actions {
+            margin: 0;
+        }
+    </style>
+}

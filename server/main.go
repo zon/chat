@@ -1,18 +1,27 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"log"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/zon/chat/core"
+)
 
 func main() {
-	initSessionStore()
+	err := core.InitDB(true)
+	if err != nil {
+		log.Fatal(err)
+	}
+	core.InitSessionStore()
 	LoadAuthTokenSecret()
-	
+
 	app := fiber.New()
 
 	app.Use(useSession)
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Ok")
-	})
+	app.Get("/", getIndex)
 	app.Post("/auth", postAuth)
+	app.Get("/user/:id", getUser)
+	app.Post("/user/:id", getUser)
 
 	app.Listen(":8080")
 }

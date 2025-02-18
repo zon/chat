@@ -7,7 +7,6 @@ const port string = "8080"
 const authProtocol string = "http"
 const authHost string = "localhost"
 const authPort string = "8081"
-const authPath string = "/auth"
 
 func rootUrl() string {
 	return protocol + "://" + host + ":" + port

@@ -1,0 +1,20 @@
+package html
+
+import (
+	"github.com/zon/chat/core"
+)
+
+templ User(user *core.User) {
+    <h2>Rename</h2>
+    <form method="post" action={ user.Url() }>
+        <div class="field">
+            <label for="name"></label>
+            <input id="name" name="name" type="text" />
+        </div>
+        @Error("")
+        <div class="actions">
+            <button class="primary" type="submit">Save</button>
+            <a class="button" href=".">Cancel</a>
+        </div>
+    </form>
+}

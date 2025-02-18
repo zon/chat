@@ -6,10 +6,12 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/zon/chat/core"
 )
 
 const AuthTokenSecretEnv = "AUTH_TOKEN_SECRET"
 const DefaultAuthTokenSecret = "beans"
+const authPath string = "/auth"
 
 var AuthTokenSecret []byte
 
@@ -39,7 +41,7 @@ func postAuth(c *fiber.Ctx) error {
 		return fmt.Errorf("no userID in token")
 	}
 
-	err = createSession(c, claims.UserID)
+	_, err = core.CreateSession(c, claims.UserID)
 	if err != nil {
 		return err
 	}
