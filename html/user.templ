@@ -5,16 +5,15 @@ import (
 )
 
 templ User(user *core.User) {
-    <h2>Rename</h2>
+    <p>Set your name. <span class="note">Can be changed at any time.</span></p>
     <form method="post" action={ user.Url() }>
         <div class="field">
-            <label for="name"></label>
+            <label for="name">Name</label>
             <input id="name" name="name" type="text" />
         </div>
         @Error("")
         <div class="actions">
-            <button class="primary" type="submit">Save</button>
-            <a class="button" href=".">Cancel</a>
+            <button class="primary" type="submit">Set</button>
         </div>
     </form>
 }

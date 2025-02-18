@@ -10,7 +10,8 @@ templ Style() {
             font-variation-settings:
                 "wdth" 150;
             font-size: 18px;
-            background-color: hsl(0 0% 90%);
+            background-color: hsl(0 0% 15%);
+            color: hsl(0 0% 95%);
             margin: 0;
         }
         #page {
@@ -19,15 +20,18 @@ templ Style() {
         }
         h1 {
             font-weight: 800;
-            color: hsl(0 90% 45%);
+            color: hsl(30 90% 65%);
             margin: 1em 2ex;
             text-transform: uppercase;
         }
         h1 span {
-            color: hsl(30 90% 50%);
+            color: hsl(60 90% 75%);
         }
         h1, h2, h3 {
             font-size: inherit;
+        }
+        p span.note {
+            color: hsl(0 0% 45%)
         }
         #content {
             margin: 1em 2ex;
@@ -52,7 +56,7 @@ templ Style() {
             margin: 1em 0;
         }
         form div#error p {
-            background-color: hsl(0 90% 70%);
+            background-color: hsl(0 90% 65%);
             font-weight: 500;
             color: white;
             padding: 0.5em 1ex;
@@ -71,73 +75,38 @@ templ Style() {
             display: block;
             font-weight: 500;
         }
-        input[type="email"],
-        input[type="password"] {
+        input[type="text"] {
             display: block;
             width: auto;
             border: none;
             border-radius: 0;
+            background-color: hsl(0 0% 20%);
+            color: inherit;
             padding: 0.5em 1ex;
         }
-        input[type="email"],
-        input[type="password"],
+        input[type="text"],
         button {
             font: inherit;
         }
         button, a.button {
             font-weight: 500;
-            border: 1px solid hsl(0 0% 80%);
+            border: 1px solid hsl(0 0% 30%);
             border-radius: 0;
             padding: 0.5em 2ex;
-            color: black;
+            color: inherit;
             text-decoration: none;
         }
         button.primary {
-            background-color: hsl(240 90% 70%);
+            background-color: hsl(240 90% 65%);
             color: white;
             border: none;
             font-weight: 600;
         }
         a.delete {
-            background-color: hsl(0 90% 70%);
+            background-color: hsl(0 90% 65%);
             color: white;
             border: none;
             font-weight: 600;
-        }
-        #local-session {
-            display: flex;
-            column-gap: 2ex;
-            align-items: center;
-        }
-        #local-session p {
-            margin: 0;
-            flex-grow: 2;
-        }
-        #sessions {
-            margin: 1em 0;
-        }
-        form.session {
-            display: flex;
-            column-gap: 2ex;
-            align-items: center;
-            border: 2px solid hsl(30 90% 60%);
-            background-color: hsl(30 90% 90%);
-            padding: 0.5em 1ex;
-            padding-left: 2ex;
-            margin: 1em 0;
-        }
-        form.session p {
-            margin: 0;
-            flex-grow: 2;
-        }
-        form.session p span {
-            display: inline-block;
-            background-color: hsl(30 90% 60%);
-            color: white;
-            padding: 0.25em 1ex;
-        }
-        form.session .actions {
-            margin: 0;
         }
     </style>
 }

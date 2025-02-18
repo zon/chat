@@ -16,7 +16,7 @@ func render(ctx *fiber.Ctx, cmp templ.Component) error {
 }
 
 func renderLayout(ctx *fiber.Ctx, cmp templ.Component) error {
-	layout := html.Layout(cmp)
+	layout := html.Layout(html.DefaultTitle(), cmp)
 	if isHxRequest(ctx) {
 		return render(ctx, layout)
 	} else {

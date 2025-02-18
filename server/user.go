@@ -19,7 +19,13 @@ func getUser(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return renderLayout(c, html.User(user))
+
+	layout := html.Layout(html.WeclomeTitle(), html.User(user))
+	if isHxRequest(c) {
+		return render(c, layout)
+	} else {
+		return render(c, html.Doc(layout))
+	}
 }
 
 func postUser(c *fiber.Ctx) error {

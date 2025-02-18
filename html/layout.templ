@@ -1,9 +1,9 @@
 package html
 
-templ Layout(content templ.Component) {
+templ Layout(title templ.Component, content templ.Component) {
 	<body hx-boost="true">
 		<div id="page">
-			<h1>Chat!</h1>
+			@title
 			<div id="content">
 				@content
 			</div>
