@@ -2,6 +2,7 @@ package html
 
 import (
 	"github.com/zon/chat/core"
+	"time"
 )
 
 templ Index(user *core.User, alert string) {
@@ -20,6 +21,7 @@ templ Index(user *core.User, alert string) {
                     </div>
                 }
                 <p class="placeholder">Post a message 👍</p>
+                @Message("Zon", time.Now(), "<p>What?</p>")
             </div>
             @NewMessage()
         </div>

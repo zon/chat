@@ -20,13 +20,6 @@ func getUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	// var title templ.Component
-	// if user.IsReady() {
-	// 	title = html.DefaultTitle()
-	// } else {
-	// 	title = html.WeclomeTitle()
-	// }
-
 	layout := html.Layout(html.User(user))
 	if isHxRequest(c) {
 		return render(c, layout)

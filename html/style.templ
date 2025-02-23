@@ -9,7 +9,7 @@ templ Style() {
             font-style: normal;
             font-variation-settings:
                 "wdth" 150;
-            font-size: 18px;
+            font-size: 16px;
             background-color: hsl(0 0% 5%);
             color: hsl(0 0% 95%);
             margin: 0;
@@ -51,6 +51,16 @@ templ Style() {
         }
         #messages :last-child {
             margin-bottom: 0;
+        }
+        .message {
+            margin: 1em 0;
+        }
+        .message .details {
+            color: hsl(0, 0%, 50%);
+            margin-bottom: 0;
+        }
+        .message .details .user {
+            color: hsl(60 90% 75%);
         }
         #foot {
             display: flex;

@@ -1,8 +1,32 @@
 package html
 
+import (
+    "time"
+
+	"github.com/zon/chat/core"
+)
+
 templ NewMessage() {
-    <form id="foot" method="post" action="/message" hx-post="/message" hx-vals="js:{message: getMessageValue()}" hx-swap="outerHTML">
+    <form id="foot" method="post" action="/message" hx-post="/message" hx-vals="js:{text: getMessageValue()}" hx-swap="outerHTML">
         <p id="message" contenteditable="true" hx-on:focus="onMessageFocus()"><span class="placeholder">Message</span></p>
         <button class="primary" type="submit">Send</button>
     </form>
+}
+
+templ Message(user string, created time.Time, content string) {
+    <div class="message">
+        <p class="details">
+            <span class="user">{ user }</span>
+            <spwn class="time">{ core.FormatTime(created) }</spwn>
+        </p>
+        <div class="content">
+            @templ.Raw(content)
+        </div>
+    </div>
+}
+
+templ OobMessage(user string, created time.Time, content string) {
+    <div hx-swap-oob="beforeend:#messages">
+        @Message(user, created, content)
+    </div>
 }

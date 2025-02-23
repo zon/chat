@@ -62,3 +62,12 @@ func GetSession(ctx *fiber.Ctx) (*Session, error) {
 	}
 	return session, nil
 }
+
+func GetSessionUser(ctx *fiber.Ctx) (*User, error) {
+	var user *User
+	session, err := GetSession(ctx)
+	if err != nil {
+		return user, err
+	}
+	return GetUser(session.UserID)
+}
