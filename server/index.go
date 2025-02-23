@@ -19,7 +19,7 @@ func getIndex(c *fiber.Ctx) error {
 }
 
 func renderIndex(c *fiber.Ctx, user *core.User, alert string) error {
-	return renderLayout(c, html.Index(user, alert))
+	return renderBody(c, html.Index(user, alert))
 }
 
 func redirectToIndex(ctx *fiber.Ctx, user *core.User, alert string) error {

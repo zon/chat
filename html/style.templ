@@ -10,9 +10,53 @@ templ Style() {
             font-variation-settings:
                 "wdth" 150;
             font-size: 18px;
-            background-color: hsl(0 0% 15%);
+            background-color: hsl(0 0% 5%);
             color: hsl(0 0% 95%);
             margin: 0;
+        }
+        #chat {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        #head {
+        }
+        #menu {
+            display: flex;
+            align-items: center;
+        }
+        #menu h1 {
+            flex: 1;
+            margin: 0;
+            margin-left: 1ex;
+        }
+        #menu p {
+            margin: 0;
+        }
+        #menu p a.button {
+            border-width: 0 0 0 1px;
+        }
+        #messages {
+            flex: 1;
+            padding: 1em 1ex;
+            background-color: hsl(0 0% 15%);
+        }
+        #foot {
+            display: flex;
+            background-color: hsl(0 0% 20%);
+        }
+        #message {
+            flex: 1;
+            padding: 0.5em 2ex;
+            margin: 0;
+        }
+        #message:focus {
+            outline: none;
         }
         #page {
             margin: auto;
@@ -75,20 +119,30 @@ templ Style() {
             display: block;
             font-weight: 500;
         }
+        input[type="text"], textarea {
+            border: none;
+            border-radius: 0;
+            color: inherit;
+            padding: 0.5em 1ex;
+            background-color: hsl(0 0% 20%);
+            font-size: inherit;
+            resize: none;
+            outline: none;
+        }
+        input[type="text"]:focus, textarea:focus {
+            border: none;
+            border-radius: 0;
+        }
         input[type="text"] {
             display: block;
             width: auto;
-            border: none;
-            border-radius: 0;
-            background-color: hsl(0 0% 20%);
-            color: inherit;
-            padding: 0.5em 1ex;
         }
         input[type="text"],
         button {
             font: inherit;
         }
         button, a.button {
+            display: inline-block;
             font-weight: 500;
             border: 1px solid hsl(0 0% 30%);
             border-radius: 0;

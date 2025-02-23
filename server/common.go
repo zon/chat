@@ -16,11 +16,14 @@ func render(ctx *fiber.Ctx, cmp templ.Component) error {
 }
 
 func renderLayout(ctx *fiber.Ctx, cmp templ.Component) error {
-	layout := html.Layout(html.DefaultTitle(), cmp)
+	return renderBody(ctx, html.Layout(cmp))
+}
+
+func renderBody(ctx *fiber.Ctx, cmp templ.Component) error {
 	if isHxRequest(ctx) {
-		return render(ctx, layout)
+		return render(ctx, cmp)
 	} else {
-		return render(ctx, html.Doc(layout))
+		return render(ctx, html.Doc(cmp))
 	}
 }
 

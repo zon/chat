@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,6 +15,9 @@ func useProxy(ctx *fiber.Ctx) error {
 	}
 	
 	if !strings.HasSuffix(ctx.BaseURL(), ":"+ proxyPort) {
+
+		fmt.Println("redirect", proxyUrl())
+
 		return ctx.Redirect(proxyUrl() + ctx.Path())
 	}
 
@@ -21,5 +25,5 @@ func useProxy(ctx *fiber.Ctx) error {
 }
 
 func proxyUrl() string {
-	return protocol + "://" + host + ":" + proxyPort
+	return protocol + "://" + host() + ":" + proxyPort
 }

@@ -5,14 +5,26 @@ import (
 )
 
 templ Index(user *core.User, alert string) {
-    <section id="local-session">
-        <p><a class="button" href={ user.Url() }>{ user.Name }</a></p>
-        <button hx-delete="/login">Logout</button>
-    </section>
-    if alert != "" {
-        <div id="alert">
-            <p>{ alert }</p>
+	<body hx-boost="true">
+        <div id="chat">
+            <div id="head">
+                <div id="menu">
+                    <h1>Wurbs!</h1>
+                    <p><a class="button" href={ user.Url() }>{ user.Name }</a></p>
+                </div>
+            </div>
+            <div id="messages">
+                if alert != "" {
+                    <div id="alert">
+                        <p>{ alert }</p>
+                    </div>
+                }
+                <p>Post a message!</p>
+            </div>
+            <form id="foot" method="post" action="/message">
+                <p id="message" contenteditable="true">Message</p>
+                <button class="primary" type="submit">Send</button>
+            </form>
         </div>
-    }
-    <h2>Index</h2>
+    </body>
 }
