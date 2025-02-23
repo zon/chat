@@ -20,6 +20,7 @@ func main() {
 	app.Use(useProxy)
 	app.Use(useSession)
 	app.Get("/", getIndex)
+	app.Post("/message", postMessage)
 	app.Post("/auth", postAuth)
 	app.Get("/user/:id", getUser)
 	app.Post("/user/:id", postUser)

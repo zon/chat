@@ -19,12 +19,9 @@ templ Index(user *core.User, alert string) {
                         <p>{ alert }</p>
                     </div>
                 }
-                <p>Post a message!</p>
+                <p class="placeholder">Post a message 👍</p>
             </div>
-            <form id="foot" method="post" action="/message">
-                <p id="message" contenteditable="true">Message</p>
-                <button class="primary" type="submit">Send</button>
-            </form>
+            @NewMessage()
         </div>
     </body>
 }

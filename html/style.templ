@@ -33,7 +33,7 @@ templ Style() {
         #menu h1 {
             flex: 1;
             margin: 0;
-            margin-left: 1ex;
+            margin-left: 2ex;
         }
         #menu p {
             margin: 0;
@@ -43,8 +43,14 @@ templ Style() {
         }
         #messages {
             flex: 1;
-            padding: 1em 1ex;
+            padding: 0.5em 2ex;
             background-color: hsl(0 0% 15%);
+        }
+        #messages :first-child {
+            margin-top: 0;
+        }
+        #messages :last-child {
+            margin-bottom: 0;
         }
         #foot {
             display: flex;
@@ -57,6 +63,9 @@ templ Style() {
         }
         #message:focus {
             outline: none;
+        }
+        .placeholder {
+            color: hsl(0, 0%, 50%)
         }
         #page {
             margin: auto;

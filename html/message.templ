@@ -1,0 +1,8 @@
+package html
+
+templ NewMessage() {
+    <form id="foot" method="post" action="/message" hx-post="/message" hx-vals="js:{message: getMessageValue()}" hx-swap="outerHTML">
+        <p id="message" contenteditable="true" hx-on:focus="onMessageFocus()"><span class="placeholder">Message</span></p>
+        <button class="primary" type="submit">Send</button>
+    </form>
+}
