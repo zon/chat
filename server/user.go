@@ -61,5 +61,5 @@ func postUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	return redirectToIndex(c, user, "Name changed")
+	return redirectToIndex(c, "Name changed")
 }

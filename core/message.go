@@ -7,22 +7,23 @@ import (
 	"gorm.io/gorm"
 )
 
-const pageLimit int = 10
+const pageLimit int = 50
 
 type Message struct {
 	gorm.Model
 	UserID  uint
+	User    User
 	Content string
 }
 
-func CreateMessage(userId uint, content string) (*Message, error) {
-	m := &Message{UserID: userId, Content: content}
+func CreateMessage(user User, content string) (*Message, error) {
+	m := &Message{User: user, Content: content}
 	err := DB.Save(&m).Error
 	return m, err
 }
 
 func GetLatestMessages(messages *[]Message) error {
-	return DB.Limit(pageLimit).Order("created_at").Find(&messages).Error
+	return DB.Joins("User").Limit(pageLimit).Order("created_at desc").Find(&messages).Error
 }
 
 func GetMessagePage(since time.Time, messages *[]Message) error {

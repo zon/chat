@@ -7,8 +7,6 @@ import (
 	"github.com/zon/chat/core"
 )
 
-const userIDKey string = "userID"
-
 func useSession(ctx *fiber.Ctx) error {
 	session, err := core.GetSession(ctx)
 	if err != nil {

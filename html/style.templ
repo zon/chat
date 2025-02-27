@@ -42,18 +42,16 @@ templ Style() {
             border-width: 0 0 0 1px;
         }
         #messages {
+            display: flex;
             flex: 1;
             padding: 0.5em 2ex;
             background-color: hsl(0 0% 15%);
+            flex-direction: column-reverse;
+            gap: 1em;
+            overflow-y: scroll;
         }
-        #messages :first-child {
-            margin-top: 0;
-        }
-        #messages :last-child {
-            margin-bottom: 0;
-        }
-        .message {
-            margin: 1em 0;
+        .message p {
+            margin: 0;
         }
         .message .details {
             color: hsl(0, 0%, 50%);

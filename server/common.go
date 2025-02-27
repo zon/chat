@@ -6,6 +6,9 @@ import (
 	"github.com/zon/chat/html"
 )
 
+const userIDKey string = "userID"
+const alertKey string = "alert"
+
 func isHxRequest(ctx *fiber.Ctx) bool {
 	return ctx.Get("Hx-Request", "false") == "true"
 }

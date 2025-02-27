@@ -7,28 +7,37 @@ import (
 )
 
 func getIndex(c *fiber.Ctx) error {
-	session, err := core.GetSession(c)
+	user, err := core.GetSessionUser(c)
 	if err != nil {
 		return err
 	}
-	user, err := core.GetUser(session.UserID)
+
+	var messages []core.Message
+	err = core.GetLatestMessages(&messages)
 	if err != nil {
 		return err
 	}
-	return renderIndex(c, user, "")
+
+	alert := getAlert(c)
+	return renderBody(c, html.Index(user, messages, wsUrl(), alert))
 }
 
-func renderIndex(c *fiber.Ctx, user *core.User, alert string) error {
-	return renderBody(c, html.Index(user, wsUrl(), alert))
+func getAlert(c *fiber.Ctx) string {
+	alert := c.Locals(alertKey)
+	if alert == nil {
+		return ""
+	}
+	return alert.(string)
 }
 
-func redirectToIndex(ctx *fiber.Ctx, user *core.User, alert string) error {
+func redirectToIndex(c *fiber.Ctx, alert string) error {
 	pushUrl := "/"
-	if isHxRequest(ctx) {
-		ctx.Set("HX-Push-Url", pushUrl)
-		return renderIndex(ctx, user, alert)
+	if isHxRequest(c) {
+		c.Set("HX-Push-Url", pushUrl)
+		c.Locals(alertKey, alert)
+		return getIndex(c)
 	} else {
-		ctx.Redirect(pushUrl)
+		c.Redirect(pushUrl)
 		return nil
 	}
 }

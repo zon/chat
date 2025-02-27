@@ -9,10 +9,10 @@ templ NewMessageForm() {
     </form>
 }
 
-templ Message(msg *core.Message, user *core.User) {
+templ Message(msg core.Message) {
     <div id={ msg.HtmlID() } class="message">
         <p class="details">
-            <span class="user">{ user.Name }</span>
+            <span class="user">{ msg.User.Name }</span>
             <spwn class="time">{ core.FormatTime(msg.CreatedAt) }</spwn>
         </p>
         <div class="content">
@@ -21,8 +21,8 @@ templ Message(msg *core.Message, user *core.User) {
     </div>
 }
 
-templ OobMessage(msg *core.Message, user *core.User) {
-    <div id="messages" hx-swap-oob="beforeend">
-        @Message(msg, user)
+templ OobMessage(msg core.Message) {
+    <div id="messages" hx-swap-oob="afterbegin">
+        @Message(msg)
     </div>
 }

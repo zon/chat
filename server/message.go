@@ -13,7 +13,7 @@ func handleMessage(c *net.Client, msg *net.Message) error {
 	}
 
 	content := markdownToHtml(msg.Text)
-	record, err := core.CreateMessage(c.UserID, content)
+	record, err := core.CreateMessage(*user, content)
 	if err != nil {
 		return err
 	}
@@ -24,6 +24,6 @@ func handleMessage(c *net.Client, msg *net.Message) error {
 		return err
 	}
 
-	cmp = html.OobMessage(record, user)
+	cmp = html.OobMessage(*record)
 	return topic.RenderWrite(cmp)
 }

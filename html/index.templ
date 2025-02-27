@@ -4,7 +4,7 @@ import (
 	"github.com/zon/chat/core"
 )
 
-templ Index(user *core.User, wsUrl, alert string) {
+templ Index(user *core.User, messages []core.Message, wsUrl, alert string) {
 	<body hx-boost="true">
         <div id="chat" hx-ext="ws" ws-connect={ wsUrl }>
             <div id="head">
@@ -19,7 +19,13 @@ templ Index(user *core.User, wsUrl, alert string) {
                         <p>{ alert }</p>
                     </div>
                 }
-                <p class="placeholder">Post a message 👍</p>
+                if len(messages) > 0 {
+                    for _, msg := range messages {
+                        @Message(msg)
+                    }
+                } else {
+                    <p class="placeholder">Post a message 👍</p>
+                }
             </div>
             @NewMessageForm()
         </div>
