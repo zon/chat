@@ -9,11 +9,19 @@ templ NewMessageForm() {
     </form>
 }
 
-templ Message(msg core.Message) {
-    <div id={ msg.HtmlID() } class="message">
+templ Message(msg core.Message, more bool) {
+    <div
+        id={ msg.HtmlID() }
+        class="message"
+        if more {
+            hx-get={ "/messages?before=" + core.FormatTime(msg.CreatedAt) }
+            hx-trigger="intersect once"
+            hx-swap="afterend"
+        }
+    >
         <p class="details">
             <span class="user">{ msg.User.Name }</span>
-            <spwn class="time">{ core.FormatTime(msg.CreatedAt) }</spwn>
+            <spwn class="time">{ core.FormatNaturalTime(msg.CreatedAt) }</spwn>
         </p>
         <div class="content">
             @templ.Raw(msg.Content)
@@ -21,8 +29,15 @@ templ Message(msg core.Message) {
     </div>
 }
 
+templ Messages(messages []core.Message) {
+    {{ length := len(messages) }}
+    for m, msg := range messages {
+        @Message(msg, m >= length-1)
+    }
+}
+
 templ OobMessage(msg core.Message) {
     <div id="messages" hx-swap-oob="afterbegin">
-        @Message(msg)
+        @Message(msg, false)
     </div>
 }
