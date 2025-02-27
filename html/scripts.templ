@@ -5,13 +5,6 @@ templ Scripts() {
 		function getMessage() {
 			return document.getElementById('message')
 		}
-
-		function onMessageFocus() {
-			const placeholders = getMessage().getElementsByClassName('placeholder')
-			for (const placeholder of placeholders) {
-				placeholder.remove()
-			}
-		}
         
 		function getMessageValue() {
 			return getMessage().innerHTML

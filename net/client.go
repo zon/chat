@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/a-h/templ"
 	"github.com/gofiber/contrib/websocket"
@@ -41,10 +42,15 @@ func (c *Client) ReadMessage(msg *Message) error {
 	if t != websocket.TextMessage {
 		return fmt.Errorf("non text message type %d", t)
 	}
+	err = json.Unmarshal(d, &msg)
+	if err != nil {
+		return err
+	}
+	msg.Text = strings.TrimSpace(msg.Text)
 
-	log.Println("d", string(d))
+	log.Printf("%d received %s", c.Id, msg)
 
-	return json.Unmarshal(d, &msg)
+	return nil
 }
 
 func (c *Client) WriteText(data []byte) error {
@@ -68,4 +74,8 @@ func (c *Client) RenderWrite(cmp templ.Component) error {
 
 func (c *Client) Close() error {
 	return c.conn.Conn.Close()
+}
+
+func (m *Message) IsEmpty() bool {
+	return m.Text == ""
 }

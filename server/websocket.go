@@ -36,9 +36,12 @@ func handleWebocket(c *websocket.Conn) {
 			log.Println(client.Id, "read error:", err)
 			break
 		}
+		if msg.IsEmpty() {
+			continue
+		}
 
 		handleMessage(client, &msg)
-		
+
 	}
 	topic.Leave(client)
 	err = client.Close()
