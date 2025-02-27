@@ -1,32 +1,28 @@
 package html
 
-import (
-    "time"
+import "github.com/zon/chat/core"
 
-	"github.com/zon/chat/core"
-)
-
-templ NewMessage() {
-    <form id="foot" method="post" action="/message" hx-post="/message" hx-vals="js:{text: getMessageValue()}" hx-swap="outerHTML">
+templ NewMessageForm() {
+    <form id="foot" ws-send hx-vals="js:{text: getMessageValue()}">
         <p id="message" contenteditable="true" hx-on:focus="onMessageFocus()"><span class="placeholder">Message</span></p>
         <button class="primary" type="submit">Send</button>
     </form>
 }
 
-templ Message(user string, created time.Time, content string) {
-    <div class="message">
+templ Message(msg *core.Message, user *core.User) {
+    <div id={ msg.HtmlID() } class="message">
         <p class="details">
-            <span class="user">{ user }</span>
-            <spwn class="time">{ core.FormatTime(created) }</spwn>
+            <span class="user">{ user.Name }</span>
+            <spwn class="time">{ core.FormatTime(msg.CreatedAt) }</spwn>
         </p>
         <div class="content">
-            @templ.Raw(content)
+            @templ.Raw(msg.Content)
         </div>
     </div>
 }
 
-templ OobMessage(user string, created time.Time, content string) {
-    <div hx-swap-oob="beforeend:#messages">
-        @Message(user, created, content)
+templ OobMessage(msg *core.Message, user *core.User) {
+    <div id="messages" hx-swap-oob="beforeend">
+        @Message(msg, user)
     </div>
 }

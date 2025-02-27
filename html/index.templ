@@ -2,12 +2,11 @@ package html
 
 import (
 	"github.com/zon/chat/core"
-	"time"
 )
 
-templ Index(user *core.User, alert string) {
+templ Index(user *core.User, wsUrl, alert string) {
 	<body hx-boost="true">
-        <div id="chat">
+        <div id="chat" hx-ext="ws" ws-connect={ wsUrl }>
             <div id="head">
                 <div id="menu">
                     <h1>Wurbs!</h1>
@@ -21,9 +20,8 @@ templ Index(user *core.User, alert string) {
                     </div>
                 }
                 <p class="placeholder">Post a message 👍</p>
-                @Message("Zon", time.Now(), "<p>What?</p>")
             </div>
-            @NewMessage()
+            @NewMessageForm()
         </div>
     </body>
 }

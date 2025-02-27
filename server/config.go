@@ -26,6 +26,10 @@ func authHost() string {
 	return host
 }
 
+func url() string {
+	return protocol +"://"+ host() +":"+ port
+}
+
 func authUrl() string {
 	return authProtocol + "://" + authHost() + ":" + authPort + authPath + "/" + appUri
 }

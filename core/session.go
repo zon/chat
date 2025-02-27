@@ -18,7 +18,15 @@ type Session struct {
 }
 
 func CreateSession(ctx *fiber.Ctx, userID uint) (*Session, error) {
-	session := &Session{UserID: userID}
+	var session *Session
+	user, err := GetUser(userID)
+	if err != nil {
+		return session, err
+	}
+	session = &Session{
+		UserID: user.ID,
+		Ready:  user.IsReady(),
+	}
 	f, err := store.Get(ctx)
 	if err != nil {
 		return session, err

@@ -1,36 +1,29 @@
 package main
 
 import (
-	"time"
-
-	"github.com/gofiber/fiber/v2"
 	"github.com/zon/chat/core"
 	"github.com/zon/chat/html"
+	"github.com/zon/chat/net"
 )
 
-type postMessageBody struct {
-	Text string
-}
-
-func postMessage(c *fiber.Ctx) error {
-	user, err := core.GetSessionUser(c)
+func handleMessage(c *net.Client, msg *net.Message) error {
+	user, err := core.GetUser(c.UserID)
 	if err != nil {
 		return err
 	}
 
-	var body postMessageBody
-	err = c.BodyParser(&body)
-	if err != nil {
-		return err
-	}
-	content := markdownToHtml(body.Text)
-
-	err = render(c, html.NewMessage())
+	content := markdownToHtml(msg.Text)
+	record, err := core.CreateMessage(c.UserID, content)
 	if err != nil {
 		return err
 	}
 
-	now := time.Now()
+	cmp := html.NewMessageForm()
+	err = topic.RenderWrite(cmp)
+	if err != nil {
+		return err
+	}
 
-	return render(c, html.OobMessage(user.Name, now, content))
+	cmp = html.OobMessage(record, user)
+	return topic.RenderWrite(cmp)
 }
