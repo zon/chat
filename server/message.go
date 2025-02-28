@@ -9,25 +9,42 @@ import (
 )
 
 func getMessages(c *fiber.Ctx) error {
+	var messages []core.Message
+
 	bq := c.Query("before")
-	if bq == "" {
-		return fiber.ErrBadRequest
-	}
-	before, err := core.ParseTime(bq)
-	if err != nil {
-		log.Error(err)
-		return fiber.ErrBadRequest
+	if bq != "" {
+		before, err := core.ParseTime(bq)
+		if err != nil {
+			log.Error(err)
+			return fiber.ErrBadRequest
+		}
+		err = core.GetMessagesBefore(before, &messages)
+		if err != nil {
+			return err
+		}
+		return render(c, html.Messages(messages, true))
 	}
 
-	var messages []core.Message
-	err = core.GetMessagesBefore(before, &messages)
+	aq := c.Query("after")
+	if aq != "" {
+		after, err := core.ParseTime(aq)
+		if err != nil {
+			log.Error(err)
+			return fiber.ErrBadRequest
+		}
+		err = core.GetMessagesAfter(after, &messages)
+		if err != nil {
+			return err
+		}
+		return render(c, html.Messages(messages, false))
+	}
+
+	err := core.GetLatestMessages(&messages)
 	if err != nil {
 		return err
 	}
-
-	return render(c, html.Messages(messages))
+	return render(c, html.Messages(messages, true))
 }
-
 
 func handleMessage(c *net.Client, msg *net.Message) error {
 	user, err := core.GetUser(c.UserID)

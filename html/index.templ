@@ -20,7 +20,7 @@ templ Index(user *core.User, messages []core.Message, wsUrl, alert string) {
                     </div>
                 }
                 if len(messages) > 0 {
-                    @Messages(messages)
+                    @Messages(messages, true)
                 } else {
                     <p class="placeholder">Post a message 👍</p>
                 }

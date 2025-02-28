@@ -2,12 +2,34 @@ package html
 
 templ Scripts() {
     <script>
+		let connectedOnce = false
+
 		function getMessage() {
 			return document.getElementById('message')
 		}
         
-		function getMessageValue() {
+		function getMessageContent() {
 			return getMessage().innerHTML
 		}
+
+		function catchUpMessages() {
+			const first = htmx.find('#messages :first-child')
+			const values = first ? { after: first.dataset.created } : {}
+			const swap = first ? 'afterbegin' : 'innerHTML'
+			htmx.ajax('GET', '/messages', {
+				values,
+				target: '#messages',
+				swap
+			})
+		}
+
+		function onWsOpen() {
+			if (connectedOnce) {
+				catchUpMessages()
+			}
+			connectedOnce = true
+		}
+
+		htmx.on('htmx:wsOpen', onWsOpen)
 	</script>
 }

@@ -30,6 +30,10 @@ func GetMessagesBefore(since time.Time, messages *[]Message) error {
 	return DB.Joins("User").Limit(pageLimit).Order("created_at desc").Where("created_at < ?", since).Find(&messages).Error
 }
 
+func GetMessagesAfter(since time.Time, messages *[]Message) error {
+	return DB.Joins("User").Order("created_at desc").Where("created_at > ?", since).Find(&messages).Error
+}
+
 func (m *Message) HtmlID() string {
 	return fmt.Sprintf("msg-%d", m.ID)
 }

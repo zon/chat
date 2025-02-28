@@ -3,21 +3,23 @@ package html
 import "github.com/zon/chat/core"
 
 templ NewMessageForm() {
-    <form id="foot" ws-send hx-vals="js:{text: getMessageValue()}">
+    <form id="foot" ws-send hx-vals="js:{text: getMessageContent()}">
         <p id="message" contenteditable="true"></p>
         <button class="primary" type="submit">Send</button>
     </form>
 }
 
 templ Message(msg core.Message, more bool) {
+    {{ created := core.FormatTime(msg.CreatedAt) }}
     <div
         id={ msg.HtmlID() }
         class="message"
         if more {
-            hx-get={ "/messages?before=" + core.FormatTime(msg.CreatedAt) }
+            hx-get={ "/messages?before=" + created }
             hx-trigger="intersect once"
             hx-swap="afterend"
         }
+        data-created={ created }
     >
         <p class="details">
             <span class="user">{ msg.User.Name }</span>
@@ -29,10 +31,10 @@ templ Message(msg core.Message, more bool) {
     </div>
 }
 
-templ Messages(messages []core.Message) {
+templ Messages(messages []core.Message, more bool) {
     {{ length := len(messages) }}
     for m, msg := range messages {
-        @Message(msg, m >= length-1)
+        @Message(msg, more && m >= length-1)
     }
 }
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
@@ -12,6 +13,8 @@ import (
 var topic *net.Topic
 
 func main() {
+	proxy := os.Getenv("PROXY") != "false"
+
 	err := core.InitDB(true)
 	if err != nil {
 		log.Fatal(err)
@@ -23,7 +26,9 @@ func main() {
 
 	app := fiber.New()
 
-	app.Use(useProxy)
+	if proxy {
+		app.Use(useProxy)
+	}
 	app.Use(useSession)
 	app.Get("/", getIndex)
 	app.Get("/messages", getMessages)
