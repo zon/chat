@@ -46,7 +46,7 @@ templ Style() {
         #messages {
             display: flex;
             flex: 1;
-            padding: 0.5em 2ex;
+            padding: 1em 2ex;
             background-color: hsl(0 0% 15%);
             flex-direction: column-reverse;
             gap: 1em;
@@ -63,16 +63,35 @@ templ Style() {
             color: hsl(60 90% 75%);
         }
         #foot {
-            display: flex;
             background-color: hsl(0 0% 20%);
         }
-        #message {
+        .error {
+            display: none;
+            background-color: hsl(0 90% 65%);
+            font-weight: 500;
+        }
+        .error p {
+            padding: 0.5em 2ex;
+            margin: 0;
+            text-align: center;
+        }
+        .error p span.code {
+            font-weight: 600;
+            color: hsl(60 90% 65%);
+        }
+        #head-error {
+            background-color: hsl(300 90% 65%);
+        }
+        #new-message {
+            display: flex;
+        }
+        #new-message-content {
             flex: 1;
             padding: 0.5em 2ex;
             margin: 0;
             content: "Message";
         }
-        #message:focus {
+        #new-message-content:focus {
             outline: none;
             content: normal;
         }

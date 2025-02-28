@@ -3,13 +3,9 @@ package html
 templ Scripts() {
     <script>
 		let connectedOnce = false
-
-		function getMessage() {
-			return document.getElementById('message')
-		}
         
 		function getMessageContent() {
-			return getMessage().innerHTML
+			return htmx.find('#new-message-content').innerHTML
 		}
 
 		function catchUpMessages() {
@@ -23,13 +19,43 @@ templ Scripts() {
 			})
 		}
 
+		function showError(head) {
+			const id = head ? '#head-error' : '#foot-error'
+			htmx.find(id).style.display = 'block'
+		}
+
+		function hideError(head) {
+			const id = head ? '#head-error' : '#foot-error'
+			htmx.find(id).style.display = 'none'
+		}
+
 		function onWsOpen() {
+			hideError(true)
 			if (connectedOnce) {
 				catchUpMessages()
 			}
 			connectedOnce = true
 		}
 
+		function onWsConnecting() {
+			showError(true)
+		}
+
+		function onResponseError(event) {
+			const req = event.detail.xhr
+			const {status, statusText} = req
+			htmx.find('#foot-error p').innerHTML = `💣 <span class="code">${status}</span> <span class="description">${statusText}</span>`
+			showError()
+		}
+
+		function onSendError() {
+			htmx.find('#foot-error p').innerHTML = `👻 Connection Failure`
+			showError()
+		}
+
 		htmx.on('htmx:wsOpen', onWsOpen)
+		htmx.on('htmx:wsConnecting', onWsConnecting)
+		htmx.on('htmx:responseError', onResponseError)
+		htmx.on('htmx:sendError', onSendError)
 	</script>
 }

@@ -3,9 +3,9 @@ package html
 import "github.com/zon/chat/core"
 
 templ NewMessageForm() {
-    <form id="foot" ws-send hx-vals="js:{text: getMessageContent()}">
-        <p id="message" contenteditable="true"></p>
-        <button class="primary" type="submit">Send</button>
+    <form id="new-message" action="/messages" method="post" hx-vals="js:{text: getMessageContent()}">
+        <p id="new-message-content" contenteditable="true"></p>
+        <button class="primary" type="submit">📨</button>
     </form>
 }
 
