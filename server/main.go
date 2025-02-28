@@ -32,6 +32,7 @@ func main() {
 	app.Use(useSession)
 	app.Get("/", getIndex)
 	app.Get("/messages", getMessages)
+	app.Post("/", postMessage)
 	app.Post("/auth", postAuth)
 	app.Get("/user/:id", getUser)
 	app.Post("/user/:id", postUser)

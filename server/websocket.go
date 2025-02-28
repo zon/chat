@@ -13,9 +13,6 @@ func wsUrl() string {
 }
 
 func useWebsocket(c *fiber.Ctx) error {
-
-	log.Println("ws")
-
 	if websocket.IsWebSocketUpgrade(c) {
 		c.Locals("allowed", true)
 		return c.Next()
@@ -39,9 +36,6 @@ func handleWebocket(c *websocket.Conn) {
 		if msg.IsEmpty() {
 			continue
 		}
-
-		handleMessage(client, &msg)
-
 	}
 	topic.Leave(client)
 	err = client.Close()

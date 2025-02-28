@@ -1,12 +1,17 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/zon/chat/core"
 	"github.com/zon/chat/html"
-	"github.com/zon/chat/net"
 )
+
+type postMessageBody struct {
+	Text string
+}
 
 func getMessages(c *fiber.Ctx) error {
 	var messages []core.Message
@@ -46,24 +51,34 @@ func getMessages(c *fiber.Ctx) error {
 	return render(c, html.Messages(messages, true))
 }
 
-func handleMessage(c *net.Client, msg *net.Message) error {
-	user, err := core.GetUser(c.UserID)
+func postMessage(c *fiber.Ctx) error {
+	user, err := core.GetSessionUser(c)
 	if err != nil {
 		return err
 	}
 
-	content := core.MarkdownToHtml(msg.Text)
+	var body postMessageBody
+	err = c.BodyParser(&body)
+	if err != nil {
+		return err
+	}
+	content := strings.TrimSpace(body.Text)
+
+	if content == "" {
+		return fiber.ErrBadRequest
+	}
+
+	content = core.MarkdownToHtml(content)
 	record, err := core.CreateMessage(*user, content)
 	if err != nil {
 		return err
 	}
 
-	cmp := html.NewMessageForm()
+	cmp := html.OobMessage(*record)
 	err = topic.RenderWrite(cmp)
 	if err != nil {
 		return err
 	}
 
-	cmp = html.OobMessage(*record)
-	return topic.RenderWrite(cmp)
+	return render(c, html.NewMessageForm())
 }
