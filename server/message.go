@@ -52,7 +52,7 @@ func handleMessage(c *net.Client, msg *net.Message) error {
 		return err
 	}
 
-	content := markdownToHtml(msg.Text)
+	content := core.MarkdownToHtml(msg.Text)
 	record, err := core.CreateMessage(*user, content)
 	if err != nil {
 		return err
