@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/zon/chat/core"
 )
 
@@ -17,6 +18,7 @@ func useSession(ctx *fiber.Ctx) error {
 		if isPost(ctx) && isResource(ctx, authPath) {
 			return ctx.Next()
 		} else {
+			log.Debugf("%s %s %s", ctx.Method(), ctx.Path(), "unauthenticated")
 			return ctx.Redirect(authUrl())
 		}
 	}

@@ -2,7 +2,7 @@ package main
 
 import "os"
 
-const appUri string = "chat"
+const appUri string = "wurds"
 const protocol string = "http"
 const hostDefault string = "localhost"
 const port string = "8080"

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/zon/chat/core"
 )
@@ -45,6 +46,8 @@ func postAuth(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+
+	log.Debug("POST /auth ok")
 
 	return c.Redirect("/")
 }
