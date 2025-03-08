@@ -1,16 +1,17 @@
-package main
+package core
 
 import "os"
 
 const appUri string = "wurds"
-const protocol string = "http"
+const Protocol string = "http"
 const hostDefault string = "localhost"
-const port string = "8080"
+const Port string = "8080"
 const authProtocol string = "http"
 const authHostDefault string = "localhost"
 const authPort string = "8081"
+const AuthPath string = "/auth"
 
-func host() string {
+func Host() string {
 	h := os.Getenv("WURDS_HOST")
 	if h == "" {
 		h = hostDefault
@@ -18,7 +19,7 @@ func host() string {
 	return h
 }
 
-func authHost() string {
+func AuthHost() string {
 	host := os.Getenv("WHO_THIS_HOST")
 	if host == "" {
 		host = authHostDefault
@@ -26,10 +27,10 @@ func authHost() string {
 	return host
 }
 
-func url() string {
-	return protocol +"://"+ host() +":"+ port
+func Url() string {
+	return Protocol + "://" + Host() + ":" + Port
 }
 
-func authUrl() string {
-	return authProtocol + "://" + authHost() + ":" + authPort + authPath + "/" + appUri
+func AuthUrl() string {
+	return authProtocol + "://" + AuthHost() + ":" + authPort + AuthPath + "/" + appUri
 }

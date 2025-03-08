@@ -6,7 +6,7 @@ import (
 )
 
 templ User(user *core.User) {
-    if user.Name == "" {
+    if !user.Ready {
         <h1>Welcome to <span>Wurbs!</span></h1>
         <div id="content">
             <p>Set your name. <span class="note">Can be changed at any time.</span></p>

@@ -14,12 +14,14 @@ func useSession(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	log.Debugf("%s %s session %s %d", ctx.Method(), ctx.Path(), session.ID(), session.UserID)
+
 	if !session.HasAuth() {
-		if isPost(ctx) && isResource(ctx, authPath) {
+		if isPost(ctx) && isResource(ctx, core.AuthPath) {
 			return ctx.Next()
 		} else {
 			log.Debugf("%s %s %s", ctx.Method(), ctx.Path(), "unauthenticated")
-			return ctx.Redirect(authUrl())
+			return ctx.Redirect(core.AuthUrl())
 		}
 	}
 
@@ -27,6 +29,7 @@ func useSession(ctx *fiber.Ctx) error {
 		if isResource(ctx, core.UserPath) {
 			return ctx.Next()
 		} else {
+			log.Debugf("%s %s %s", ctx.Method(), ctx.Path(), "not ready")
 			return ctx.Redirect(core.UserUrl(session.UserID))
 		}
 	}

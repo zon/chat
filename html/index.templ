@@ -10,7 +10,7 @@ templ Index(user *core.User, messages []core.Message, wsUrl, alert string) {
             <div id="head">
                 <div id="menu">
                     <h1>Wurbs!</h1>
-                    <p><a class="button" href={ user.Url() }>{ user.Name }</a></p>
+                    <p><a id="user" class="button" href={ user.Url() }>{ user.Name }</a></p>
                 </div>
                 <div id="head-error" class="error">
                     <p>👻 Reconnecting...</p>

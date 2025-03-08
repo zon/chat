@@ -26,10 +26,10 @@ func main() {
 
 	app := fiber.New()
 
+	app.Use(useSession)
 	if proxy {
 		app.Use(useProxy)
 	}
-	app.Use(useSession)
 	app.Get("/", getIndex)
 	app.Get("/messages", getMessages)
 	app.Post("/", postMessage)
@@ -40,5 +40,5 @@ func main() {
 	app.Use("/ws", useWebsocket)
 	app.Get("/ws/:id", websocket.New(handleWebocket))
 
-	app.Listen(":"+ port)
+	app.Listen(":"+ core.Port)
 }

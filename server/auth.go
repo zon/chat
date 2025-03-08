@@ -12,7 +12,6 @@ import (
 
 const AuthTokenSecretEnv = "AUTH_TOKEN_SECRET"
 const DefaultAuthTokenSecret = "beans"
-const authPath string = "/auth"
 
 var AuthTokenSecret []byte
 
@@ -42,12 +41,16 @@ func postAuth(c *fiber.Ctx) error {
 		return fmt.Errorf("no userID in token")
 	}
 
-	_, err = core.CreateSession(c, claims.UserID)
+	session, err := core.GetSession(c)
+	if err != nil {
+		return err
+	}
+	err = session.SetUserID(c, claims.UserID)
 	if err != nil {
 		return err
 	}
 
-	log.Debug("POST /auth ok")
+	log.Debugf("POST /auth session authed %s %d", session.ID(), session.UserID)
 
 	return c.Redirect("/")
 }

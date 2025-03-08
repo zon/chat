@@ -14,36 +14,31 @@ var store *session.Store
 type Session struct {
 	UserID uint
 	Ready  bool
-	fiber  *session.Session
+	Fiber  *session.Session
 }
 
-func CreateSession(ctx *fiber.Ctx, userID uint) (*Session, error) {
-	var session *Session
-	user, err := GetUser(userID)
-	if err != nil {
-		return session, err
-	}
-	session = &Session{
-		UserID: user.ID,
-		Ready:  user.IsReady(),
-	}
-	f, err := store.Get(ctx)
-	if err != nil {
-		return session, err
-	}
-	session.fiber = f
-	err = session.Save(ctx)
-	return session, err
+func (s *Session) ID() string {
+	return s.Fiber.ID()
 }
 
 func (s *Session) HasAuth() bool {
 	return s.UserID > 0
 }
 
+func (s *Session) SetUserID(ctx *fiber.Ctx, id uint) error {
+	user, err := GetUser(id)
+	if err != nil {
+		return err
+	}
+	s.UserID = user.ID
+	s.Ready = user.Ready
+	return s.Save(ctx)
+}
+
 func (s *Session) Save(ctx *fiber.Ctx) error {
-	s.fiber.Set(userKey, s.UserID)
-	s.fiber.Set(readyKey, s.Ready)
-	return s.fiber.Save()
+	s.Fiber.Set(userKey, s.UserID)
+	s.Fiber.Set(readyKey, s.Ready)
+	return s.Fiber.Save()
 }
 
 func InitSessionStore() {
@@ -59,7 +54,7 @@ func GetSession(ctx *fiber.Ctx) (*Session, error) {
 	if err != nil {
 		return session, err
 	}
-	session.fiber = fs
+	session.Fiber = fs
 	uv := fs.Get(userKey)
 	if uv != nil {
 		session.UserID = uv.(uint)

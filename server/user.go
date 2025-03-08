@@ -50,6 +50,7 @@ func postUser(c *fiber.Ctx) error {
 	}
 
 	user.Name = name
+	user.Ready = true
 	err = user.Save()
 	if err != nil {
 		return err

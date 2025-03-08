@@ -5,11 +5,12 @@ import (
 
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
+	"github.com/zon/chat/core"
 	"github.com/zon/chat/net"
 )
 
 func wsUrl() string {
-	return url() + "/ws/123?v=1.0"
+	return core.Url() + "/ws/123?v=1.0"
 }
 
 func useWebsocket(c *fiber.Ctx) error {
