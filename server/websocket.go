@@ -1,10 +1,9 @@
 package main
 
 import (
-	"log"
-
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/zon/chat/core"
 	"github.com/zon/chat/net"
 )
@@ -24,14 +23,14 @@ func useWebsocket(c *fiber.Ctx) error {
 func handleWebocket(c *websocket.Conn) {
 	client := net.MakeClient(c, userIDKey)
 	topic.Join(client)
-	log.Println(client.Id, "joined")
+	log.Info(client.Id, " joined")
 
 	var msg net.Message
 	var err error
 	for {
 		err = client.ReadMessage(&msg)
 		if err != nil {
-			log.Println(client.Id, "read error:", err)
+			log.Error(client.Id, " read error - ", err)
 			break
 		}
 		if msg.IsEmpty() {
@@ -41,8 +40,8 @@ func handleWebocket(c *websocket.Conn) {
 	topic.Leave(client)
 	err = client.Close()
 	if err != nil {
-		log.Println(client.Id, "close error:", err)
+		log.Error(client.Id, " close error - ", err)
 		return
 	}
-	log.Println(client.Id, "closed")
+	log.Info(client.Id, " closed")
 }

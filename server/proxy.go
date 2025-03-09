@@ -5,7 +5,6 @@ import (
 
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
 	"github.com/zon/chat/core"
 )
 
@@ -15,7 +14,6 @@ func useProxy(ctx *fiber.Ctx) error {
 	}
 
 	if !hasPort(ctx, core.ProxyPort) {
-		log.Debugf("%s %s redirect %s", ctx.Method(), ctx.Path(), core.ProxyUrl())
 		return ctx.Redirect(core.ProxyUrl() + ctx.Path())
 	}
 
