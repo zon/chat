@@ -1,31 +1,60 @@
 package core
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
 	"github.com/microcosm-cc/bluemonday"
 )
 
-var sanitizerPolicy *bluemonday.Policy
+var textSanitizer *bluemonday.Policy
+var htmlSanitizer *bluemonday.Policy
+var markdownRenderer *html.Renderer
 
-func GetSanitizer() *bluemonday.Policy {
-	if sanitizerPolicy == nil {
-		sanitizerPolicy = bluemonday.UGCPolicy()
+func GetTextSanitizer() *bluemonday.Policy {
+	if textSanitizer == nil {
+		textSanitizer = bluemonday.StrictPolicy()
 	}
-	return sanitizerPolicy
+	return textSanitizer
+}
+
+func GetHtmlSanitizer() *bluemonday.Policy {
+	if htmlSanitizer == nil {
+		htmlSanitizer = bluemonday.UGCPolicy()
+	}
+	return htmlSanitizer
+}
+
+func GetMarkdownParser() *parser.Parser {
+	extensions := parser.CommonExtensions | parser.HardLineBreak
+	return parser.NewWithExtensions(extensions)
+}
+
+func GetMarkdownRenderer() *html.Renderer {
+	if markdownRenderer == nil {
+		flags := html.CommonFlags
+		opts := html.RendererOptions{Flags: flags}
+		markdownRenderer = html.NewRenderer(opts)
+	}
+	return markdownRenderer
 }
 
 func MarkdownToHtml(md string) string {
-	extensions := parser.CommonExtensions
-	p := parser.NewWithExtensions(extensions)
-	doc := p.Parse([]byte(md))
+	text := strings.ReplaceAll(md, "<br>", "\n")
+	text = string(GetTextSanitizer().Sanitize(text))
 
-	flags := html.CommonFlags
-	opts := html.RendererOptions{Flags: flags}
-	renderer := html.NewRenderer(opts)
-	result := markdown.Render(doc, renderer)
+	fmt.Println("text: ", text)
 
-	policy := GetSanitizer()
-	return string(policy.SanitizeBytes(result))
+	result := markdown.ToHTML(
+		[]byte(md),
+		GetMarkdownParser(),
+		GetMarkdownRenderer(),
+	)
+
+	fmt.Println("result: ", string(result))
+
+	return string(GetHtmlSanitizer().SanitizeBytes(result))
 }

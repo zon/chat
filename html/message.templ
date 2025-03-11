@@ -4,7 +4,7 @@ import "github.com/zon/chat/core"
 
 templ NewMessageForm() {
     <form id="new-message" action="/" method="post" hx-vals="js:{text: getMessageContent()}" hx-target="this" hx-swap="outerHTML">
-        <p id="new-message-content" contenteditable="true"></p>
+        <p id="new-message-content" contenteditable="plaintext-only"></p>
         <button class="primary" type="submit">📨</button>
     </form>
 }
