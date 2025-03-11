@@ -23,7 +23,7 @@ templ Message(msg core.Message, more bool) {
     >
         <p class="details">
             <span class="user">{ msg.User.Name }</span>
-            <spwn class="time">{ core.FormatNaturalTime(msg.CreatedAt) }</spwn>
+            <span class="time">{ core.FormatNaturalTime(msg.CreatedAt) }</span>
         </p>
         <div class="content">
             @templ.Raw(msg.Content)
