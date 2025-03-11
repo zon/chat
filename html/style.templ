@@ -36,6 +36,11 @@ templ Style() {
             flex: 1;
             margin: 0;
             margin-left: 2ex;
+            color: hsl(30 90% 65%);
+            margin: 1em 2ex;
+        }
+        #menu h1 span {
+            color: hsl(60 90% 75%);
         }
         #menu p {
             margin: 0;
@@ -52,15 +57,22 @@ templ Style() {
             gap: 1em;
             overflow-y: scroll;
         }
-        .message p {
-            margin: 0;
-        }
         .message .details {
             color: hsl(0, 0%, 50%);
-            margin-bottom: 0;
+            margin: 0;
         }
         .message .details .user {
             color: hsl(60 90% 75%);
+        }
+        .message .content > *:first-child {
+            margin-top: 0;
+        }
+        .message .content > *:last-child {
+            margin-bottom: 0;
+        }
+        .message .content pre {
+            background-color: hsl(0 0% 20%);
+            padding: 1em 1ex;
         }
         #foot {
             background-color: hsl(0 0% 20%);
@@ -102,17 +114,10 @@ templ Style() {
             margin: auto;
             max-width: 500px;
         }
-        h1 {
-            font-weight: 800;
-            color: hsl(30 90% 65%);
-            margin: 1em 2ex;
-            text-transform: uppercase;
-        }
-        h1 span {
-            color: hsl(60 90% 75%);
-        }
         h1, h2, h3 {
             font-size: inherit;
+            font-weight: 800;
+            text-transform: uppercase;
         }
         p span.note {
             color: hsl(0 0% 45%)
