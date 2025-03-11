@@ -26,8 +26,6 @@ templ Style() {
             flex-direction: column;
             height: 100%;
         }
-        #head {
-        }
         #menu {
             display: flex;
             align-items: center;
@@ -47,6 +45,7 @@ templ Style() {
         }
         #menu p a.button {
             border-width: 0 0 0 1px;
+            padding: 1em 2ex;
         }
         #messages {
             display: flex;
@@ -71,8 +70,12 @@ templ Style() {
             margin-bottom: 0;
         }
         .message .content pre {
-            background-color: hsl(0 0% 20%);
-            padding: 1em 1ex;
+            background-color: hsl(0 0% 10%);
+            padding: 1em 2ex;
+            overflow-x: scroll;
+        }
+        .message .content code {
+            background-color: hsl(0 0% 10%);
         }
         #foot {
             background-color: hsl(0 0% 20%);
@@ -99,7 +102,7 @@ templ Style() {
         }
         #new-message-content {
             flex: 1;
-            padding: 0.5em 2ex;
+            padding: 1em 2ex;
             margin: 0;
             content: "Message";
         }
