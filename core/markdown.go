@@ -1,60 +1,29 @@
 package core
 
 import (
-	"fmt"
+	"bytes"
 	"strings"
 
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
-	"github.com/gomarkdown/markdown/parser"
-	"github.com/microcosm-cc/bluemonday"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/renderer/html"
 )
 
-var textSanitizer *bluemonday.Policy
-var htmlSanitizer *bluemonday.Policy
-var markdownRenderer *html.Renderer
-
-func GetTextSanitizer() *bluemonday.Policy {
-	if textSanitizer == nil {
-		textSanitizer = bluemonday.StrictPolicy()
-	}
-	return textSanitizer
-}
-
-func GetHtmlSanitizer() *bluemonday.Policy {
-	if htmlSanitizer == nil {
-		htmlSanitizer = bluemonday.UGCPolicy()
-	}
-	return htmlSanitizer
-}
-
-func GetMarkdownParser() *parser.Parser {
-	extensions := parser.CommonExtensions | parser.HardLineBreak
-	return parser.NewWithExtensions(extensions)
-}
-
-func GetMarkdownRenderer() *html.Renderer {
-	if markdownRenderer == nil {
-		flags := html.CommonFlags
-		opts := html.RendererOptions{Flags: flags}
-		markdownRenderer = html.NewRenderer(opts)
-	}
-	return markdownRenderer
-}
-
-func MarkdownToHtml(md string) string {
-	text := strings.ReplaceAll(md, "<br>", "\n")
-	text = string(GetTextSanitizer().Sanitize(text))
-
-	fmt.Println("text: ", text)
-
-	result := markdown.ToHTML(
-		[]byte(md),
-		GetMarkdownParser(),
-		GetMarkdownRenderer(),
+func GetMdConverter() goldmark.Markdown {
+	return goldmark.New(
+		goldmark.WithExtensions(extension.GFM),
+		goldmark.WithRendererOptions(
+			html.WithHardWraps(),
+		),
 	)
+}
 
-	fmt.Println("result: ", string(result))
-
-	return string(GetHtmlSanitizer().SanitizeBytes(result))
+func MarkdownToHtml(md string) (string, error) {
+	text := strings.ReplaceAll(md, "<br>", "\n")
+	var result bytes.Buffer
+	err := GetMdConverter().Convert([]byte(text), &result)
+	if err != nil {
+		return "", err
+	}
+	return result.String(), nil
 }

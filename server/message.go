@@ -68,7 +68,10 @@ func postMessage(c *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	content = core.MarkdownToHtml(content)
+	content, err = core.MarkdownToHtml(content)
+	if err != nil {
+		return err
+	}
 	record, err := core.CreateMessage(*user, content)
 	if err != nil {
 		return err
