@@ -29,6 +29,10 @@ templ Scripts() {
 			htmx.find(id).style.display = 'none'
 		}
 
+		function removeAlert() {
+			htmx.find('#alert').remove()
+		}
+
 		function onWsOpen() {
 			hideError(true)
 			if (connectedOnce) {

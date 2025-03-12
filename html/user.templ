@@ -6,35 +6,32 @@ import (
 )
 
 templ User(user *core.User) {
-    if !user.Ready {
-        <h1>Welcome to <span>Wurbs!</span></h1>
-        <div id="content">
-            <p>Set your name. <span class="note">Can be changed at any time.</span></p>
-            <form method="post" action={ user.Url() }>
-                <div class="field">
-                    <label for="name">Name</label>
-                    <input id="name" name="name" type="text" />
-                </div>
-                @Error("")
-                <div class="actions">
-                    <button class="primary" type="submit">Set</button>
-                </div>
-            </form>
-        </div>
-    } else {
-        <h1><span>Wurbs!</span></h1>
-        <div id="content">
+    <h1 id="title">Wurbs!</h1>
+    <div id="content">
+        if user.Ready {
             <h2>Edit User #{ fmt.Sprintf("%d", user.ID) }</h2>
-            <form method="post" action={ user.Url() }>
-                <div class="field">
-                    <label for="name">Name</label>
+        } else {
+            <h2>Welcome</h2>
+            <p>Set your name. <span class="note">Can be changed at any time</span></p>
+        }
+        <form method="post" action={ user.Url() }>
+            <div class="field">
+                <label for="name">Name</label>
+                if user.Ready {
                     <input id="name" name="name" type="text" value={ user.Name } />
-                </div>
-                @Error("")
-                <div class="actions">
+                } else {
+                    <input id="name" name="name" type="text" />
+                }
+            </div>
+            @Error("")
+            <div class="actions">
+                if user.Ready {
                     <button class="primary" type="submit">Save</button>
-                </div>
-            </form>
-        </div>
-    }
+                    <a class="button" href="/">Cancel</a>
+                } else {
+                    <button class="primary" type="submit">Set</button>
+                }
+            </div>
+        </form>
+    </div>
 }

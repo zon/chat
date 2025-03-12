@@ -9,19 +9,20 @@ templ Index(user *core.User, messages []core.Message, wsUrl, alert string) {
         <div id="chat" hx-ext="ws" ws-connect={ wsUrl }>
             <div id="head">
                 <div id="menu">
-                    <h1>Wurbs!</h1>
+                    <h1 id="title">Wurbs!</h1>
                     <p><a id="user" class="button" href={ user.Url() }>{ user.Name }</a></p>
                 </div>
+                if alert != "" {
+                    <div id="alert" hx-on:click="removeAlert()">
+                        <p>{ alert }</p>
+                        <button class="close">X</button>
+                    </div>
+                }
                 <div id="head-error" class="error">
                     <p>👻 Reconnecting...</p>
                 </div>
             </div>
             <div id="messages">
-                if alert != "" {
-                    <div id="alert">
-                        <p>{ alert }</p>
-                    </div>
-                }
                 if len(messages) > 0 {
                     @Messages(messages, true)
                 } else {
@@ -31,6 +32,7 @@ templ Index(user *core.User, messages []core.Message, wsUrl, alert string) {
             <div id="foot">
                 <div id="foot-error" class="error" hx-on:click="hideError()">
                     <p>💣 <span class="code">404</span> <span class="description">Not found</span></p>
+                    <button class="close">X</button>
                 </div>
                 @NewMessageForm()
             </div>
