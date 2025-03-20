@@ -1,8 +1,12 @@
 package core
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
+	"github.com/gofiber/storage/memcache"
 	"github.com/gofiber/storage/sqlite3"
 )
 
@@ -42,7 +46,19 @@ func (s *Session) Save(ctx *fiber.Ctx) error {
 }
 
 func InitSessionStore() {
-	storage := sqlite3.New()
+	host := os.Getenv("MEMCACHED_HOST")
+	port := os.Getenv("MEMCACHED_PORT")
+
+	var storage fiber.Storage
+	if host != "" {
+		storage = memcache.New(memcache.Config{
+			Servers: fmt.Sprintf("%s:%s", host, port),
+		})
+
+	} else {
+		storage = sqlite3.New()
+	}
+
 	store = session.New(session.Config{
 		Storage: storage,
 	})

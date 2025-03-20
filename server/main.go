@@ -15,7 +15,7 @@ var topic *net.Topic
 func main() {
 	proxy := os.Getenv("PROXY") != "false"
 
-	err := core.InitDB(true)
+	err := core.InitDB()
 	if err != nil {
 		log.Fatal(err)
 	}
