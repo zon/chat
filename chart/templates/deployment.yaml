@@ -35,9 +35,9 @@ spec:
         - name: MEMCACHED_PORT
           value: "{{ .Values.memcached.port }}"
         - name: WURBS_URL
-          value: http://{{ .Values.host }}
+          value: https://{{ .Values.host }}
         - name: WHO_THIS_URL
-          value: http://{{ .Values.authHost }}
+          value: https://{{ .Values.authHost }}
         - name: PORT
           value: "{{ .Values.port }}"
         ports:
