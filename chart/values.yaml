@@ -1,0 +1,17 @@
+image:
+  repo: zvonimir/wurbs
+  tag: v0.0.0
+port: 8080
+memcached:
+  host: memcached.memcached.svc.cluster.local
+  port: 11211
+postgres:
+  host: postgres-postgresql.postgres.svc.cluster.local
+  port: 5432
+  user: postgres
+  password:
+    secret: postgres
+    key: password
+  database: wurbs
+host: wurbs.chat
+authHost: who.wurbs.chat

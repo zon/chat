@@ -2,7 +2,7 @@ module github.com/zon/chat
 
 go 1.23.7
 
-replace github.com/zon/hxcore => ../hxcore
+// replace github.com/zon/hxcore => ../hxcore
 
 replace github.com/zon/id => ../id
 

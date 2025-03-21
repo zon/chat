@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: main
+        image: {{ .Values.image.repo }}:{{ .Values.image.tag }}
+        env:
+        - name: PGHOST
+          value: {{ .Values.postgres.host }}
+        - name: PGPORT
+          value: "{{ .Values.postgres.port }}"
+        - name: PGUSER
+          value: {{ .Values.postgres.user }}
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgres.password.secret }}
+              key: {{ .Values.postgres.password.key }}
+        - name: PGDATABASE
+          value: {{ .Values.postgres.database }}
+        - name: MEMCACHED_HOST
+          value: {{ .Values.memcached.host }}
+        - name: MEMCACHED_PORT
+          value: "{{ .Values.memcached.port }}"
+        - name: WURBS_URL
+          value: http://{{ .Values.host }}
+        - name: WHO_THIS_URL
+          value: http://{{ .Values.authHost }}
+        - name: PORT
+          value: "{{ .Values.port }}"
+        ports:
+        - containerPort: {{ .Values.port }}

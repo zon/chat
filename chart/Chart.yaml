@@ -1,0 +1,4 @@
+apiVersion: v2
+name: wurbs
+description: A chat app
+version: 0.0.0
