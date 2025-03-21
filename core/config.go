@@ -2,35 +2,36 @@ package core
 
 import "os"
 
-const appUri string = "wurds"
-const Protocol string = "http"
-const hostDefault string = "localhost"
-const Port string = "8080"
-const authProtocol string = "http"
-const authHostDefault string = "localhost"
-const authPort string = "8081"
+const appUri string = "wurbs"
 const AuthPath string = "/auth"
 
-func Host() string {
-	h := os.Getenv("WURDS_HOST")
-	if h == "" {
-		h = hostDefault
+var port string = "8080"
+var url string = "http://localhost:8080"
+var authUrl string = "http://localhost:8081"
+
+func InitConfig() {
+	p := os.Getenv("PORT")
+	if p != "" {
+		port = p
 	}
-	return h
+	u := os.Getenv("WURBS_URL")
+	if u != "" {
+		url = u
+	}
+	u = os.Getenv("WHO_THIS_URL")
+	if u != "" {
+		authUrl = u
+	}
 }
 
-func AuthHost() string {
-	host := os.Getenv("WHO_THIS_HOST")
-	if host == "" {
-		host = authHostDefault
-	}
-	return host
+func Port() string {
+	return port
 }
 
 func Url() string {
-	return Protocol + "://" + Host() + ":" + Port
+	return url
 }
 
 func AuthUrl() string {
-	return authProtocol + "://" + AuthHost() + ":" + authPort + AuthPath + "/" + appUri
+	return authUrl + AuthPath + "/" + appUri
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/url"
 	"strings"
 
 	"github.com/gofiber/contrib/websocket"
@@ -25,5 +26,9 @@ func isHttp(ctx *fiber.Ctx) bool {
 }
 
 func hasPort(ctx *fiber.Ctx, port string) bool {
-	return strings.HasSuffix(ctx.BaseURL(), ":"+port)
+	u, err := url.Parse(ctx.BaseURL())
+	if err != nil {
+		return false
+	}
+	return u.Port() == port
 }

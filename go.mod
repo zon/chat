@@ -8,6 +8,7 @@ replace github.com/zon/id => ../id
 
 require (
 	github.com/a-h/templ v0.3.833
+	github.com/alecthomas/kong v1.9.0
 	github.com/gofiber/contrib/websocket v1.3.3
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gofiber/storage/memcache v1.3.7
