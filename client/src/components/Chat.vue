@@ -13,20 +13,33 @@ const createdAt = new Date()
 const updatedAt = createdAt
 const messages = ref<Message[]>([
   {
-    id: 1,
-    content: '<p>Hello</p>',
-    user,
-    createdAt,
-    updatedAt
-  },
-  {
     id: 2,
     content: '<p>World</p>',
     user,
     createdAt,
     updatedAt
   },
+  {
+    id: 1,
+    content: '<p>Hello</p>',
+    user,
+    createdAt,
+    updatedAt
+  },
 ])
+
+function onNewMessage(content: string) {
+  const createdAt = new Date()
+  const updatedAt = createdAt
+  const message: Message = {
+    id: messages.value.length + 1,
+    content,
+    user,
+    createdAt,
+    updatedAt
+  }
+  messages.value.unshift(message)
+}
 
 </script>
 
@@ -42,7 +55,7 @@ const messages = ref<Message[]>([
       <MessageView v-for="message in messages" :message />
     </div>
     <div id="foot">
-      <NewMessageForm />
+      <NewMessageForm @submit="onNewMessage" />
     </div>
   </div>
 </template>

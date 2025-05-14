@@ -1,9 +1,20 @@
 <script setup lang="ts">
+const emit = defineEmits<{
+  submit: [content: string]
+}>()
 
+function onSubmit() {
+  const contentElement = document.getElementById('new-message-content') as HTMLParagraphElement
+  const content = contentElement.innerText
+  if (content) {
+    emit('submit', content)
+    contentElement.innerText = ''
+  }
+}
 </script>
 
 <template>
-  <form id="new-message" action="/" method="post">
+  <form id="new-message" @submit.prevent="onSubmit">
     <p id="new-message-content" contenteditable="plaintext-only"></p>
     <button class="primary" type="submit">📨</button>
   </form>
