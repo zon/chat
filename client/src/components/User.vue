@@ -1,11 +1,10 @@
 <script setup lang="ts">
 
-import Chat from './components/Chat.vue'
-
 </script>
 
 <template>
-  <RouterView />
+  <h1>User</h1>
+  <RouterLink to="/">Chat</RouterLink>
 </template>
 
 <style scoped>

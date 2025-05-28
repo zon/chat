@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { User } from '@/models/User'
 import type { Message } from '@/models/Message'
 import MessageView from '@/components/Message.vue'
@@ -41,6 +41,8 @@ function onNewMessage(content: string) {
   messages.value.unshift(message)
 }
 
+const userUrl = computed(() => `/users/${user.id}`)
+
 </script>
 
 <template>
@@ -48,7 +50,9 @@ function onNewMessage(content: string) {
     <div id="head">
       <div id="menu">
           <h1 id="title">Wurbs!</h1>
-          <p><a id="user" class="button">{{ user.name }}</a></p>
+          <p>
+            <RouterLink id="user" class="button" :to="userUrl">{{ user.name }}</RouterLink>
+          </p>
       </div>
     </div>
     <div id="messages">
