@@ -7,7 +7,8 @@ import NewMessageForm from './NewMessageForm.vue'
 
 const user: User = {
   id: 1,
-  name: 'Zon'
+  name: 'Zon',
+  ready: true
 }
 const createdAt = new Date()
 const updatedAt = createdAt
@@ -86,10 +87,6 @@ const userUrl = computed(() => `/users/${user.id}`)
     border-style: solid;
     border-color: hsl(0 0% 30%);
     padding: 1em 2ex;
-  }
-  h1#title {
-    color: hsl(30 90% 65%);
-    margin: 1em 2ex;
   }
   #menu h1#title {
     flex: 1;

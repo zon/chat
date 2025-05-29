@@ -52,6 +52,11 @@ body, a {
   color: hsl(0 0% 95%);
 }
 
+h1#title {
+  color: hsl(30 90% 65%);
+  margin: 1em 2ex;
+}
+
 .error {
   display: none;
   background-color: hsl(0 90% 65%);
