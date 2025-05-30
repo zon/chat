@@ -9,6 +9,8 @@ import (
 	"github.com/zon/chat/core"
 )
 
+const ZitadelClientID = "322307909566444934"
+
 const AuthTokenSecretEnv = "AUTH_TOKEN_SECRET"
 const DefaultAuthTokenSecret = "beans"
 

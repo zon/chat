@@ -45,3 +45,11 @@ zitadelAuth.oidcAuth.events.addUserSessionChanged(function() {
 })
 
 export default zitadelAuth
+
+export function getAuthProfile() {
+  return zitadelAuth.oidcAuth.userProfile
+}
+
+export function getAccessToken() {
+  return zitadelAuth.oidcAuth.accessToken
+}

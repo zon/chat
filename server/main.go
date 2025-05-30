@@ -1,50 +1,64 @@
 package main
 
 import (
-	"log"
+	"context"
+	"fmt"
+	"log/slog"
+	"os"
 
 	"github.com/alecthomas/kong"
-	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
-	"github.com/zon/chat/core"
-	"github.com/zon/chat/net"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
+	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
+	"github.com/zitadel/zitadel-go/v3/pkg/authorization/oauth"
+	"github.com/zitadel/zitadel-go/v3/pkg/http/middleware"
+	"github.com/zitadel/zitadel-go/v3/pkg/zitadel"
 )
 
 var cli struct {
-	Proxy bool `help:"Redirect to templ watch proxy"`
+	Key       string `arg:"" type:"existingfile" help:"Path to Zitadel API private key json file"`
+	Subdomain string `help:"Zitadel application subdomain" default:"wurbs-2d2isd"`
+	Port      string `help:"Port to host on" default:"8080"`
 }
 
-var topic *net.Topic
+type User struct {
+	ID   string
+	Name string
+}
 
 func main() {
-	ctx := kong.Parse(&cli)
-	ctx.FatalIfErrorf(ctx.Error)
+	ktx := kong.Parse(&cli)
+	ktx.FatalIfErrorf(ktx.Error)
 
-	core.InitConfig()
-	err := core.InitDB()
+	ctx := context.Background()
+
+	domain := fmt.Sprintf("%s.us1.zitadel.cloud", cli.Subdomain)
+	authZ, err := authorization.New(ctx, zitadel.New(domain), oauth.DefaultAuthorization(cli.Key))
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("zitadel sdk could not initialize", "error", err)
+		os.Exit(1)
 	}
-	core.InitSessionStore()
-	LoadAuthTokenSecret()
-
-	topic = net.MakeTopic()
 
 	app := fiber.New()
+	app.Use(cors.New())
 
-	app.Use(useSession)
-	if cli.Proxy {
-		app.Use(useProxy)
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.JSON("ok")
+	})
+
+	mw := middleware.New(authZ)
+	app.Use(adaptor.HTTPMiddleware(mw.RequireAuthorization()))
+
+	app.Get("/session", func(c *fiber.Ctx) error {
+		aCtx := mw.Context(c.Context())
+		slog.Info("user accessed task list", "id", aCtx.UserID(), "username", aCtx.Username)
+		user := User { ID: aCtx.UserID(), Name: aCtx.Username }
+		return c.JSON(user)
+	})
+
+	err = app.Listen(":" + cli.Port)
+	if err != nil {
+		slog.Error("Listen failed", "error", err)
 	}
-	app.Get("/", getIndex)
-	app.Get("/messages", getMessages)
-	app.Post("/", postMessage)
-	app.Post("/auth", postAuth)
-	app.Get("/user/:id", getUser)
-	app.Post("/user/:id", postUser)
-
-	app.Use("/ws", useWebsocket)
-	app.Get("/ws/:id", websocket.New(handleWebocket))
-
-	app.Listen(":" + core.Port())
 }

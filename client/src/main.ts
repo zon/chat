@@ -5,12 +5,6 @@ import App from './App.vue'
 import router from './router'
 import zitadelAuth from './lib/zitadel'
 
-declare module 'vue' {
-  interface ComponentCustomProperties {
-    $zitadel: typeof zitadelAuth
-  }
-}
-
 zitadelAuth.oidcAuth.startup().then(ok => {
   if (!ok) {
     console.error('Startup not ok')

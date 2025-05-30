@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import type { User } from '@/models/User'
 import type { Message } from '@/models/Message'
 import MessageView from '@/components/Message.vue'
 import NewMessageForm from '@/components/NewMessageForm.vue'
+import { getAccessToken, getAuthProfile } from '@/lib/zitadel'
+import { HOST } from '@/lib/config'
 
 const user: User = {
   id: 1,
@@ -43,6 +45,32 @@ function onNewMessage(content: string) {
 }
 
 const userUrl = computed(() => `/users/${user.id}`)
+
+onMounted(async () => {
+  const profile = getAuthProfile()
+  console.log('hi', profile)
+
+  const token = getAccessToken()
+  const bearer = `Bearer ${token}`
+
+  let url = `${HOST}/health`
+  console.log('url', url)
+  let res = await fetch(url)
+  console.log('ok', res.ok)
+  console.log('health', await res.text())
+
+  url = `${HOST}/session`
+  console.log('url', url)
+  res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Authorization: bearer
+    }
+  })
+  console.log('ok', res.ok, res.status)
+  console.log('session', await res.text())
+
+})
 
 </script>
 
