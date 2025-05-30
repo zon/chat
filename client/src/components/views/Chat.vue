@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import type { User } from '@/models/User'
 import type { Message } from '@/models/Message'
 import MessageView from '@/components/Message.vue'
-import NewMessageForm from './NewMessageForm.vue'
+import NewMessageForm from '@/components/NewMessageForm.vue'
 
 const user: User = {
   id: 1,
