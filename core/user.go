@@ -10,9 +10,10 @@ import (
 const UserPath string = "/user"
 
 type User struct {
-	ID    uint
-	Name  string `gorm:"unique"`
-	Ready bool
+	ID     uint
+	AuthID string `gorm:"uniqueIndex"`
+	Name   string `gorm:"unique"`
+	Ready  bool
 }
 
 func (u *User) Url() templ.SafeURL {
@@ -23,20 +24,29 @@ func (u *User) Save() error {
 	return DB.Save(&u).Error
 }
 
-func GetUser(id uint) (*User, error) {
+func GetUserByAuthID(authID string) (*User, error) {
 	var user *User
-	err := DB.Limit(1).Find(&user, id).Error
+	err := DB.Limit(1).Find(&user, "auth_id = ?", authID).Error
 	if err != nil {
 		return user, err
 	}
 	if user == nil || user.ID == 0 {
 		user = &User{
-			ID:   id,
-			Name: hxcore.RandomString(16),
+			AuthID: authID,
+			Name:   hxcore.RandomString(16),
 		}
 		err = user.Save()
 	}
 	return user, err
+}
+
+func GetUser(id uint) (*User, error) {
+	var user User
+	err := DB.First(&user, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 func UserUrl(id uint) string {

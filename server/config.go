@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type Config struct {
@@ -45,4 +47,8 @@ func loadUrl(urlEnv string, passwordEnv string) (*url.URL, error) {
 	}
 	u.User = url.UserPassword(u.User.Username(), v)
 	return u, nil
+}
+
+func getWebsocket(c *fiber.Ctx) error {
+	return c.JSON(config.WebSocket.String())
 }

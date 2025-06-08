@@ -1,8 +1,6 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log/slog"
 	"os"
 
@@ -10,26 +8,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
-	"github.com/zitadel/zitadel-go/v3/pkg/authorization/oauth"
-	"github.com/zitadel/zitadel-go/v3/pkg/http/middleware"
-	"github.com/zitadel/zitadel-go/v3/pkg/zitadel"
 )
 
 var cli struct {
 	Key       string `arg:"" type:"existingfile" help:"Path to Zitadel API private key json file"`
 	Subdomain string `help:"Zitadel application subdomain" default:"wurbs-2d2isd"`
 	Port      string `help:"Port to host on" default:"8080"`
-}
-
-type User struct {
-	ID   string
-	Name string
-}
-
-type WebSocketCredentials struct {
-	User     string `json:"user"`
-	Password string `json:"password"`
 }
 
 func main() {
@@ -42,12 +26,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	ctx := context.Background()
-
-	domain := fmt.Sprintf("%s.us1.zitadel.cloud", cli.Subdomain)
-	authZ, err := authorization.New(ctx, zitadel.New(domain), oauth.DefaultAuthorization(cli.Key))
+	err = initAuthMiddleware(cli.Subdomain, cli.Key)
 	if err != nil {
-		slog.Error("zitadel sdk could not initialize", "error", err)
+		slog.Error("zitadel auth middleware could not initialize", "error", err)
 		os.Exit(1)
 	}
 
@@ -58,19 +39,12 @@ func main() {
 		return c.JSON("ok")
 	})
 
-	mw := middleware.New(authZ)
-	app.Use(adaptor.HTTPMiddleware(mw.RequireAuthorization()))
+	app.Use(adaptor.HTTPMiddleware(authMiddleware.RequireAuthorization()))
 
-	app.Get("/session", func(c *fiber.Ctx) error {
-		aCtx := mw.Context(c.Context())
-		slog.Info("user accessed task list", "id", aCtx.UserID(), "username", aCtx.Username)
-		user := User{ID: aCtx.UserID(), Name: aCtx.Username}
-		return c.JSON(user)
-	})
-
-	app.Get("/websocket", func(c *fiber.Ctx) error {
-		return c.JSON(config.WebSocket.String())
-	})
+	app.Get("/auth", getAuth)
+	app.Get("/websocket", getWebsocket)
+	app.Get("/messages", getMessages)
+	app.Post("/messages", postMessage)
 
 	err = app.Listen(":" + cli.Port)
 	if err != nil {

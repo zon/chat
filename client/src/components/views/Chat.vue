@@ -31,7 +31,7 @@ const messages = ref<Message[]>([
   },
 ])
 
-function onNewMessage(content: string) {
+async function onNewMessage(content: string) {
   const createdAt = new Date()
   const updatedAt = createdAt
   const message: Message = {
