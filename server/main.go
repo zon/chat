@@ -8,8 +8,8 @@ import (
 
 	"github.com/alecthomas/kong"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization/oauth"
 	"github.com/zitadel/zitadel-go/v3/pkg/http/middleware"
@@ -27,9 +27,20 @@ type User struct {
 	Name string
 }
 
+type WebSocketCredentials struct {
+	User     string `json:"user"`
+	Password string `json:"password"`
+}
+
 func main() {
 	ktx := kong.Parse(&cli)
 	ktx.FatalIfErrorf(ktx.Error)
+
+	err := LoadConfig()
+	if err != nil {
+		slog.Error("config", "error", err)
+		os.Exit(1)
+	}
 
 	ctx := context.Background()
 
@@ -53,8 +64,12 @@ func main() {
 	app.Get("/session", func(c *fiber.Ctx) error {
 		aCtx := mw.Context(c.Context())
 		slog.Info("user accessed task list", "id", aCtx.UserID(), "username", aCtx.Username)
-		user := User { ID: aCtx.UserID(), Name: aCtx.Username }
+		user := User{ID: aCtx.UserID(), Name: aCtx.Username}
 		return c.JSON(user)
+	})
+
+	app.Get("/websocket", func(c *fiber.Ctx) error {
+		return c.JSON(config.WebSocket.String())
 	})
 
 	err = app.Listen(":" + cli.Port)

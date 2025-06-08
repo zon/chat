@@ -9,12 +9,12 @@ replace github.com/zon/id => ../id
 require (
 	github.com/a-h/templ v0.3.833
 	github.com/alecthomas/kong v1.9.0
-	github.com/go-chi/chi/v5 v5.2.1
 	github.com/gofiber/contrib/websocket v1.3.3
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gofiber/storage/memcache v1.3.7
 	github.com/gofiber/storage/sqlite3 v1.3.8
 	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/nats-io/nats.go v1.43.0
 	github.com/stretchr/testify v1.10.0
 	github.com/yuin/goldmark v1.7.8
 	github.com/zitadel/zitadel-go/v3 v3.5.3
@@ -50,6 +50,8 @@ require (
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mattn/go-sqlite3 v1.14.24 // indirect
 	github.com/muhlemmer/gu v0.3.1 // indirect
+	github.com/nats-io/nkeys v0.4.11 // indirect
+	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/savsgio/gotils v0.0.0-20240303185622-093b76447511 // indirect
@@ -63,12 +65,12 @@ require (
 	go.opentelemetry.io/otel v1.34.0 // indirect
 	go.opentelemetry.io/otel/metric v1.34.0 // indirect
 	go.opentelemetry.io/otel/trace v1.34.0 // indirect
-	golang.org/x/crypto v0.36.0 // indirect
+	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sync v0.13.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
