@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { postMessage, type Message } from '@/models/Message'
+import { getMessages, postMessage, type Message } from '@/models/Message'
 import MessageView from '@/components/Message.vue'
 import NewMessageForm from '@/components/NewMessageForm.vue'
-import { getAccessToken, getAuthProfile } from '@/lib/zitadel'
-import { HOST } from '@/lib/config'
-import type { User } from '@/models/User'
+import { user } from '@/lib/auth'
 
-const user = ref<User | null>(null)
 const messages = ref<Message[]>([])
 
 async function onNewMessage(content: string) {
@@ -18,30 +15,7 @@ async function onNewMessage(content: string) {
 const userUrl = computed(() => `/users/${user.value?.ID}`)
 
 onMounted(async () => {
-  const profile = getAuthProfile()
-  console.log('hi', profile)
-
-  const token = getAccessToken()
-  const bearer = `Bearer ${token}`
-
-  let url = `${HOST}/health`
-  console.log('url', url)
-  let res = await fetch(url)
-  console.log('ok', res.ok)
-  console.log('health', await res.text())
-
-  url = `${HOST}/auth`
-  console.log('url', url)
-  res = await fetch(url, {
-    method: 'GET',
-    headers: {
-      Authorization: bearer
-    }
-  })
-  console.log('ok', res.ok, res.status)
-  const json = await res.json()
-  console.log('auth', json)
-  user.value = json
+  messages.value = await getMessages()
 })
 
 </script>

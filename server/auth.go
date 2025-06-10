@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log/slog"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/zon/chat/core"
@@ -42,6 +41,5 @@ func getAuth(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	slog.Info("auth", "authId", user.ID, "username", user.Name)
 	return c.JSON(user)
 }

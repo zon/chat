@@ -1,4 +1,4 @@
-import { post } from '@/lib/http'
+import { get, post } from '@/lib/http'
 import type { User } from './User'
 
 export interface Message {
@@ -9,11 +9,12 @@ export interface Message {
   UpdatedAt: string
 }
 
-export async function postMessage(content: string) {
-  const res = await post('messages', content)
-  const data = await res.json()
+const path = 'messages'
 
-  console.log('postMessage', data)
+export function getMessages() {
+  return get<Message[]>(path)
+}
 
-  return data as Message
+export function postMessage(content: string) {
+  return post<Message>(path, content)
 }
