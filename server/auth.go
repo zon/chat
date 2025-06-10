@@ -14,11 +14,6 @@ import (
 	"github.com/zitadel/zitadel-go/v3/pkg/zitadel"
 )
 
-type Auth struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
 var authMiddleware *middleware.Interceptor[*oauth.IntrospectionContext]
 
 func initAuthMiddleware(subdomain, key string) error {
@@ -43,8 +38,10 @@ func authUser(c *fiber.Ctx) (*core.User, error) {
 }
 
 func getAuth(c *fiber.Ctx) error {
-	ac := authContext(c)
-	slog.Info("session", "id", ac.UserID(), "username", ac.Username)
-	auth := Auth{ID: ac.UserID(), Name: ac.Username}
-	return c.JSON(auth)
+	user, err := authUser(c)
+	if err != nil {
+		return err
+	}
+	slog.Info("auth", "authId", user.ID, "username", user.Name)
+	return c.JSON(user)
 }

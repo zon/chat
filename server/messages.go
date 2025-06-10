@@ -7,10 +7,6 @@ import (
 	"github.com/zon/chat/core"
 )
 
-type postMessageBody struct {
-	Text string
-}
-
 func getMessages(c *fiber.Ctx) error {
 	var messages []core.Message
 
@@ -53,12 +49,12 @@ func postMessage(c *fiber.Ctx) error {
 		return err
 	}
 
-	var body postMessageBody
+	var body string
 	err = c.BodyParser(&body)
 	if err != nil {
 		return err
 	}
-	content := strings.TrimSpace(body.Text)
+	content := strings.TrimSpace(body)
 
 	if content == "" {
 		return fiber.ErrBadRequest

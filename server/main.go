@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/zon/chat/core"
 )
 
 var cli struct {
@@ -23,6 +24,12 @@ func main() {
 	err := LoadConfig()
 	if err != nil {
 		slog.Error("config", "error", err)
+		os.Exit(1)
+	}
+
+	err = core.InitDB()
+	if err != nil {
+		slog.Error("db", "error", err)
 		os.Exit(1)
 	}
 

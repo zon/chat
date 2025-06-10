@@ -9,6 +9,7 @@ const options: Intl.DateTimeFormatOptions = {
 }
 const format = new Intl.DateTimeFormat(locale, options)
 
-export function formatDate(date: Date): string {
+export function formatDate(text: string): string {
+  const date = new Date(text)
   return format.format(date)
 }

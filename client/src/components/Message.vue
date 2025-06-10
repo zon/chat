@@ -7,16 +7,16 @@ const props = defineProps<{
   message: Message
 }>()
 
-const id = computed(() => `message-${props.message.id}`)
-const time = computed(() => formatDate(props.message.createdAt))
+const id = computed(() => `message-${props.message.ID}`)
+const time = computed(() => formatDate(props.message.CreatedAt))
 </script>
 
 <template>
   <div :id class="message">
     <p class="details">
-      <span class="user">{{ message.user.name }}</span> <span class="time">{{ time }}</span>
+      <span class="user">{{ message.User.Name }}</span> <span class="time">{{ time }}</span>
     </p>
-    <div class="content" v-html="message.content"></div>
+    <div class="content" v-html="message.Content"></div>
   </div> 
 </template>
 

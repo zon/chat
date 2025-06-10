@@ -1,5 +1,5 @@
 export interface User {
-  id: number
-  name: string
-  ready: boolean
+  ID: number
+  Name: string
+  Ready: boolean
 }
