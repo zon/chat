@@ -3,20 +3,19 @@ import { computed, onMounted, ref } from 'vue'
 import { getMessages, postMessage, type Message } from '@/models/Message'
 import MessageView from '@/components/Message.vue'
 import NewMessageForm from '@/components/NewMessageForm.vue'
-import { user } from '@/lib/auth'
+import { authUser } from '@/lib/auth'
 
+const authUserUrl = computed(() => `/users/${authUser.value?.ID}`)
 const messages = ref<Message[]>([])
+
+onMounted(async () => {
+  messages.value = await getMessages()
+})
 
 async function onNewMessage(content: string) {
   const message = await postMessage(content)
   messages.value.unshift(message)
 }
-
-const userUrl = computed(() => `/users/${user.value?.ID}`)
-
-onMounted(async () => {
-  messages.value = await getMessages()
-})
 
 </script>
 
@@ -26,7 +25,7 @@ onMounted(async () => {
       <div id="menu">
           <h1 id="title">Wurbs!</h1>
           <p>
-            <RouterLink id="user" class="button" :to="userUrl">{{ user?.Name }}</RouterLink>
+            <RouterLink id="user" class="button" :to="authUserUrl">{{ authUser?.Name }}</RouterLink>
           </p>
       </div>
     </div>

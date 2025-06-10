@@ -5,12 +5,13 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/zon/hxcore"
+	"gorm.io/gorm"
 )
 
 const UserPath string = "/user"
 
 type User struct {
-	ID     uint
+	gorm.Model
 	AuthID string `gorm:"uniqueIndex"`
 	Name   string `gorm:"unique"`
 	Ready  bool

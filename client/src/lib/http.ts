@@ -2,25 +2,33 @@ import { HOST } from './config'
 import { getAccessToken } from './zitadel'
 
 export async function get<T>(url: string) {
-  const fullUrl = `${HOST}/${url}`
-  const res = await fetch(fullUrl, {
-    method: 'GET',
-    headers: authHeaders()
-  })
-  isOk(res)
-  const data = await res.json()
-  return data as T
+  return request<T>(url, { method: 'GET' })
 }
 
 export async function post<T>(url: string, body: any) {
+  return request<T>(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+}
+
+export async function put<T>(url: string, body: any) {
+  return request<T>(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+}
+
+async function request<T>(url: string, init: RequestInit) {
   const fullUrl = `${HOST}/${url}`
   const res = await fetch(fullUrl, {
-    method: 'POST',
+    ...init,
     headers: {
       ...authHeaders(),
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
+      ...init.headers
+    }
   })
   isOk(res)
   const data = await res.json()

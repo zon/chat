@@ -4,6 +4,6 @@
 *.sqlite3
 .terraform
 
-server/*.json
+/server/token.json
 
 /tmp

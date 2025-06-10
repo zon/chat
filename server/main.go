@@ -52,6 +52,8 @@ func main() {
 	app.Get("/websocket", getWebsocket)
 	app.Get("/messages", getMessages)
 	app.Post("/messages", postMessage)
+	app.Get("/users/:id", getUser)
+	app.Put("/users/:id", putUser)
 
 	err = app.Listen(":" + cli.Port)
 	if err != nil {
