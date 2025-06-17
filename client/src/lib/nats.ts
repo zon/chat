@@ -3,9 +3,19 @@ import { get } from './http'
 
 export let nats: NatsConnection
 
+interface Credentials {
+  Host: string
+  User: string
+  Password: string
+}
+
 export async function connectNats() {
-  const credentials = await get<string>('websocket')
-  nats = await wsconnect({ servers: [credentials] })
+  const credentials = await get<Credentials>('websocket')
+  nats = await wsconnect({
+    servers: [credentials.Host],
+    user: credentials.User,
+    pass: credentials.Password
+  })
 }
 
 export function listen<T>(subject: string, callback: (msg: T) => void) {

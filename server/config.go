@@ -10,7 +10,13 @@ import (
 
 type Config struct {
 	Nats      *url.URL
-	WebSocket *url.URL
+	WebSocket WebSocketConfig
+}
+
+type WebSocketConfig struct {
+	Host     string
+	User     string
+	Password string
 }
 
 var config Config
@@ -20,35 +26,57 @@ func LoadConfig() error {
 	if err != nil {
 		return err
 	}
-	ws, err := loadUrl("WURBS_WS_URL", "WURBS_WS_PASSWORD")
+
+	host, err := requireEnv("WURBS_WS_HOST")
 	if err != nil {
 		return err
 	}
+	user, err := requireEnv("WURBS_WS_USER")
+	if err != nil {
+		return err
+	}
+	password, err := requireEnv("WURBS_WS_PASSWORD")
+	if err != nil {
+		return err
+	}
+
 	config = Config{
-		Nats:      nats,
-		WebSocket: ws,
+		Nats: nats,
+		WebSocket: WebSocketConfig{
+			Host:     host,
+			User:     user,
+			Password: password,
+		},
 	}
 	return nil
 }
 
 func loadUrl(urlEnv string, passwordEnv string) (*url.URL, error) {
 	u := &url.URL{}
-	v := os.Getenv(urlEnv)
-	if v == "" {
-		return u, fmt.Errorf("%s env var is missing", urlEnv)
-	}
-	u, err := url.Parse(v)
+	v, err := requireEnv(urlEnv)
 	if err != nil {
 		return u, err
 	}
-	v = os.Getenv(passwordEnv)
-	if v == "" {
-		return u, fmt.Errorf("%s env var is missing", passwordEnv)
+	u, err = url.Parse(v)
+	if err != nil {
+		return u, err
+	}
+	v, err = requireEnv(passwordEnv)
+	if err != nil {
+		return u, err
 	}
 	u.User = url.UserPassword(u.User.Username(), v)
 	return u, nil
 }
 
+func requireEnv(name string) (string, error) {
+	value := os.Getenv(name)
+	if value == "" {
+		return value, fmt.Errorf("%s env var is missing", name)
+	}
+	return value, nil
+}
+
 func getWebsocket(c *fiber.Ctx) error {
-	return c.JSON(config.WebSocket.String())
+	return c.JSON(config.WebSocket)
 }
