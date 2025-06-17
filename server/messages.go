@@ -64,7 +64,7 @@ func postMessage(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	record, err := core.CreateMessage(*user, content)
+	record, err := core.CreateMessage(user.ID, content)
 	if err != nil {
 		return err
 	}

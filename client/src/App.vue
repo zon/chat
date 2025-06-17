@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { getAuth } from './lib/auth'
+import { getAuth, subscribeUsers } from './models/User'
+import { connectNats } from './lib/nats'
+import { subscribeMessages } from './models/Message'
 
 onMounted(async () => {
   await getAuth()
+  await connectNats()
+  subscribeUsers()
+  subscribeMessages()
 })
 </script>
 

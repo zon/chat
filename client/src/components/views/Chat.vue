@@ -1,20 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { getMessages, postMessage, type Message } from '@/models/Message'
+import { onMounted } from 'vue'
 import MessageView from '@/components/Message.vue'
 import NewMessageForm from '@/components/NewMessageForm.vue'
-import { authUser } from '@/lib/auth'
-
-const authUserUrl = computed(() => `/users/${authUser.value?.ID}`)
-const messages = ref<Message[]>([])
+import { sendMessage, updateMessages, messages } from '@/models/Message'
+import { authUser } from '@/models/User'
 
 onMounted(async () => {
-  messages.value = await getMessages()
+  await updateMessages()
 })
 
 async function onNewMessage(content: string) {
-  const message = await postMessage(content)
-  messages.value.unshift(message)
+  await sendMessage(content)
 }
 
 </script>
@@ -25,7 +21,7 @@ async function onNewMessage(content: string) {
       <div id="menu">
           <h1 id="title">Wurbs!</h1>
           <p>
-            <RouterLink id="user" class="button" :to="authUserUrl">{{ authUser?.Name }}</RouterLink>
+            <RouterLink id="user" class="button" :to="authUser.url()">{{ authUser.name }}</RouterLink>
           </p>
       </div>
     </div>
