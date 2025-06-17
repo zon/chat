@@ -39,6 +39,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	err = Connect()
+	if err != nil {
+		slog.Error("nats connection failed", "error", err)
+		os.Exit(1)
+	}
+
 	app := fiber.New()
 	app.Use(cors.New())
 
