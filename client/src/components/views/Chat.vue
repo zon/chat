@@ -21,7 +21,7 @@ async function onNewMessage(content: string) {
       <div id="menu">
           <h1 id="title">Wurbs!</h1>
           <p>
-            <RouterLink id="user" class="button" :to="authUser.url()">{{ authUser.name }}</RouterLink>
+            <RouterLink id="user" class="button" to="/auth">{{ authUser.name }}</RouterLink>
           </p>
       </div>
     </div>

@@ -24,8 +24,8 @@ export class User {
     return this.id === 0
   }
 
-  url() {
-    return `/users/${this.id}`
+  path() {
+    return `${path}/${this.id}`
   }
 
 }
@@ -73,8 +73,13 @@ export async function getAuth() {
   return authUser
 }
 
-export function putUser(id: number, name: string) {
-  return put<User>(`${path}/${id}`, { Name: name })
+export async function renameAuthUser(name: string) {
+  if (authUser.value.isEmpty()) {
+    return authUser
+  }
+  const data = await put<UserData>(authUser.value.path(), { Name: name })
+  authUser.value = new AuthUser(data)
+  return authUser
 }
 
 export function subscribeUsers() {

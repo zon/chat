@@ -10,7 +10,7 @@ const routes = [
         component: () => import('./components/views/Chat.vue')
     },
     {
-        path: '/users/:id',
+        path: '/auth',
         meta: {
             authName: zitadelAuth.oidcAuth.authName
         },
