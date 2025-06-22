@@ -13,7 +13,7 @@ async function onSubmit() {
       <form id="error-content" @submit.prevent="onSubmit">
         <h2>{{ error.name }}</h2>
         <p>{{ error.message }}</p>
-        <p>{{ error.stack }}</p>
+        <pre><code>{{ error.stack }}</code></pre>
         <div class="actions">
           <button type="submit">Reload</button>
         </div>
@@ -30,11 +30,11 @@ async function onSubmit() {
     left: 0;
     right: 0;
     background-color: hsla(0, 0%, 60%, 60%);
+    overflow-x: scroll;
   }
   #error-page {
     margin: auto;
-    padding-top: 5em;
-    max-width: 500px;
+    padding: 5em;
   }
   #error-content {
     padding: 1em 2ex;

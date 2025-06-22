@@ -1,8 +1,11 @@
 package main
 
 import (
+	"errors"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/zon/chat/core"
+	"gorm.io/gorm"
 )
 
 type userPostBody struct {
@@ -47,6 +50,9 @@ func putUser(c *fiber.Ctx) error {
 	user.Name = body.Name
 	user.Ready = true
 	err = user.Save()
+	if errors.Is(err, gorm.ErrDuplicatedKey) {
+		return respondBad(c, Duplicate, "Duplicate user name")
+	}
 	if err != nil {
 		return err
 	}
