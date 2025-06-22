@@ -17,9 +17,6 @@ watch(authUser, (newAuthUser) => {
 
 async function onSubmit() {
   try {
-
-    console.log('new name', user.value.name)
-
     await renameAuthUser(user.value.name)
   } catch (err) {
     if (err instanceof BadRequestError) {
