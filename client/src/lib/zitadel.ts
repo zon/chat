@@ -1,50 +1,37 @@
 import { createZITADELAuth } from '@zitadel/vue'
-import { User } from 'oidc-client'
-import type { OidcAuth } from 'vue-oidc-client/vue3'
+import { SignInType, type OidcAuth } from 'vue-oidc-client/vue3'
+import { fatalError } from './error'
+import { clearAuth, updateAuth } from './auth'
 
-const zitadelAuth: { oidcAuth: OidcAuth; hasRole: (role: string) => any } = createZITADELAuth({
+export interface ZitadelAuth {
+  oidcAuth: OidcAuth
+  hasRole: (role: string) => any
+}
+
+export let zitadelAuth: ZitadelAuth
+
+export async function initZitadel() {
+  zitadelAuth = createZITADELAuth({
     project_resource_id: import.meta.env.VITE_ZITADEL_PROJECT_RESOURCE_ID,
     client_id: import.meta.env.VITE_ZITADEL_CLIENT_ID,
     issuer: import.meta.env.VITE_ZITADEL_ISSUER,
-})
+  })
 
-// handle events
-zitadelAuth.oidcAuth.events.addAccessTokenExpiring(function() {
-  // eslint-disable-next-line no-console
-  console.log('access token expiring')
-})
+  zitadelAuth.oidcAuth.events.addSilentRenewError(fatalError)
 
-zitadelAuth.oidcAuth.events.addAccessTokenExpired(function() {
-  // eslint-disable-next-line no-console
-  console.log('access token expired')
-})
+  zitadelAuth.oidcAuth.events.addUserLoaded(_ => {
+    updateAuth().catch(fatalError)
+  })
 
-zitadelAuth.oidcAuth.events.addSilentRenewError(function(err: Error) {
-  // eslint-disable-next-line no-console
-  console.error('silent renew error', err)
-})
+  zitadelAuth.oidcAuth.events.addUserUnloaded(clearAuth)
+}
 
-zitadelAuth.oidcAuth.events.addUserLoaded(function(user: User) {
-  // eslint-disable-next-line no-console
-  console.log('user loaded', user)
-})
-
-zitadelAuth.oidcAuth.events.addUserUnloaded(function() {
-  // eslint-disable-next-line no-console
-  console.log('user unloaded')
-})
-
-zitadelAuth.oidcAuth.events.addUserSignedOut(function() {
-  // eslint-disable-next-line no-console
-  console.log('user signed out')
-})
-
-zitadelAuth.oidcAuth.events.addUserSessionChanged(function() {
-  // eslint-disable-next-line no-console
-  console.log('user session changed')
-})
-
-export default zitadelAuth
+export async function startZitadel() {
+  const ok = await zitadelAuth.oidcAuth.startup()
+  if (!ok) {
+    throw new Error('Auth startup not ok')
+  }
+}
 
 export function getAuthProfile() {
   return zitadelAuth.oidcAuth.userProfile

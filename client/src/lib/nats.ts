@@ -1,5 +1,7 @@
 import { wsconnect, type NatsConnection } from '@nats-io/nats-core'
 import { get } from './http'
+import { subscribeUsers } from '@/models/User'
+import { subscribeMessages } from '@/models/Message'
 
 export let nats: NatsConnection
 
@@ -16,6 +18,9 @@ export async function connectNats() {
     user: credentials.User,
     pass: credentials.Password
   })
+
+  subscribeUsers()
+  subscribeMessages()
 }
 
 export function listen<T>(subject: string, callback: (msg: T) => void) {

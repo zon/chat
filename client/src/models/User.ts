@@ -1,3 +1,4 @@
+import { authUser } from '@/lib/auth'
 import { get, put } from '@/lib/http'
 import { listen } from '@/lib/nats'
 import type { Subscription } from '@nats-io/nats-core'
@@ -49,8 +50,6 @@ const path = 'users'
 const users: { [id: string]: Ref<User> } = {}
 let userSubscription: Subscription
 
-export const authUser = ref(new AuthUser())
-
 export function getUser(id: number): Ref<User> {
   let user: Ref<User>
   if (!users[id]) {
@@ -63,23 +62,6 @@ export function getUser(id: number): Ref<User> {
     user = users[id]
   }
   return user
-}
-
-export async function getAuth() {
-  if (authUser.value.isEmpty()) {
-    const data = await get<UserData>('auth')
-    authUser.value = new AuthUser(data)
-  }
-  return authUser
-}
-
-export async function renameAuthUser(name: string) {
-  if (authUser.value.isEmpty()) {
-    return authUser
-  }
-  const data = await put<UserData>(authUser.value.path(), { Name: name })
-  authUser.value = new AuthUser(data)
-  return authUser
 }
 
 export function subscribeUsers() {

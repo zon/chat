@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { authUser, renameAuthUser } from '@/lib/auth'
 import { BadRequestError } from '@/lib/http'
-import { authUser, AuthUser, renameAuthUser } from '@/models/User'
-import router from '@/router'
+import { AuthUser } from '@/models/User'
+import { router } from '@/router'
 import { onMounted, ref, watch, type Ref } from 'vue'
 
 const user = ref(new AuthUser())

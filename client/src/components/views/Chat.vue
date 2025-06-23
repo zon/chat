@@ -3,7 +3,7 @@ import { onMounted } from 'vue'
 import MessageView from '@/components/Message.vue'
 import NewMessageForm from '@/components/NewMessageForm.vue'
 import { sendMessage, updateMessages, messages } from '@/models/Message'
-import { authUser } from '@/models/User'
+import { authUser } from '@/lib/auth'
 
 onMounted(async () => {
   await updateMessages()

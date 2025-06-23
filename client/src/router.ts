@@ -1,28 +1,32 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import zitadelAuth from './lib/zitadel'
+import { createRouter, createWebHistory, type Router } from 'vue-router'
+import { zitadelAuth } from './lib/zitadel'
 
-const routes = [
-    {
-        path: '/',
-        meta: {
-            authName: zitadelAuth.oidcAuth.authName
+export let router: Router
+
+export function initRouter() {
+    const routes = [
+        {
+            path: '/',
+            meta: {
+                authName: zitadelAuth.oidcAuth.authName
+            },
+            component: () => import('./components/views/Chat.vue')
         },
-        component: () => import('./components/views/Chat.vue')
-    },
-    {
-        path: '/auth',
-        meta: {
-            authName: zitadelAuth.oidcAuth.authName
-        },
-        component: () => import('./components/views/User.vue')
-    }
-]
+        {
+            path: '/auth',
+            meta: {
+                authName: zitadelAuth.oidcAuth.authName
+            },
+            component: () => import('./components/views/User.vue')
+        }
+    ]
 
-const router = createRouter({
-    history: createWebHistory(),
-    routes
-})
+    router = createRouter({
+        history: createWebHistory(),
+        routes
+    })
 
-zitadelAuth.oidcAuth.useRouter(router)
+    zitadelAuth.oidcAuth.useRouter(router)
 
-export default router
+    return router
+}
