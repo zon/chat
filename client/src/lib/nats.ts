@@ -13,6 +13,11 @@ interface Credentials {
 
 export async function connectNats() {
   const credentials = await get<Credentials>('websocket')
+
+  if (nats !== undefined) {
+    await closeNats()
+  }
+
   nats = await wsconnect({
     servers: [credentials.Host],
     user: credentials.User,
@@ -21,6 +26,12 @@ export async function connectNats() {
 
   subscribeUsers()
   subscribeMessages()
+}
+
+export async function closeNats() {
+  if (!nats.isClosed()) {
+    nats.close()
+  }
 }
 
 export function listen<T>(subject: string, callback: (msg: T) => void) {

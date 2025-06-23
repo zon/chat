@@ -1,7 +1,8 @@
 import { AuthUser, type UserData } from '@/models/User'
 import { ref } from 'vue'
 import { get, put } from './http'
-import { connectNats } from './nats'
+import { closeNats, connectNats } from './nats'
+import { fatalError } from './error'
 
 export const authUser = ref(new AuthUser())
 
@@ -16,6 +17,7 @@ export async function updateAuth() {
 
 export function clearAuth() {
   authUser.value = new AuthUser()
+  closeNats().catch(fatalError)
 }
 
 export async function renameAuthUser(name: string) {

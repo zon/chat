@@ -5,7 +5,6 @@ import App from './App.vue'
 import { initRouter } from './router'
 import { initZitadel, startZitadel, zitadelAuth } from './lib/zitadel'
 import { fatalError } from './lib/error'
-import { connectNats } from './lib/nats'
 
 async function main() {
   await initZitadel()

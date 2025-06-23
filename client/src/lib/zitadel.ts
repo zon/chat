@@ -1,5 +1,5 @@
 import { createZITADELAuth } from '@zitadel/vue'
-import { SignInType, type OidcAuth } from 'vue-oidc-client/vue3'
+import { type OidcAuth } from 'vue-oidc-client/vue3'
 import { fatalError } from './error'
 import { clearAuth, updateAuth } from './auth'
 
@@ -30,6 +30,9 @@ export async function startZitadel() {
   const ok = await zitadelAuth.oidcAuth.startup()
   if (!ok) {
     throw new Error('Auth startup not ok')
+  }
+  if (zitadelAuth.oidcAuth.isAuthenticated) {
+    await updateAuth()
   }
 }
 
