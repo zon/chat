@@ -1,5 +1,5 @@
+import { getAccessToken } from './auth'
 import { HOST } from './config'
-import { getAccessToken } from './zitadel'
 
 export class ResponseError extends Error {
   res: Response
@@ -88,8 +88,11 @@ async function fetchOkay(url: URL, init?: RequestInit) {
   return res
 }
 
-function authHeaders() {
+function authHeaders(): { Authorization?: string } {
   const token = getAccessToken()
+  if (token === null) {
+    return {}
+  }
   const bearer = `Bearer ${token}`
   return { Authorization: bearer }
 }

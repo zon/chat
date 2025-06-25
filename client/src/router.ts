@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, type Router } from 'vue-router'
-import { zitadelAuth } from './lib/zitadel'
+import { authManager } from './lib/auth'
+import { fatalError } from './lib/error'
 
 export let router: Router
 
@@ -7,16 +8,10 @@ export function initRouter() {
     const routes = [
         {
             path: '/',
-            meta: {
-                authName: zitadelAuth.oidcAuth.authName
-            },
             component: () => import('./components/views/Chat.vue')
         },
         {
             path: '/auth',
-            meta: {
-                authName: zitadelAuth.oidcAuth.authName
-            },
             component: () => import('./components/views/User.vue')
         }
     ]
@@ -26,7 +21,21 @@ export function initRouter() {
         routes
     })
 
-    zitadelAuth.oidcAuth.useRouter(router)
+    router.addRoute({
+        path: '/oidc/signin',
+        component: {
+            created() {
+                authManager
+                    .signinCallback()
+                    .then(async user => {
+                        console.debug('OIDC signin', user)
+                        await authManager.storeUser(user ?? null)
+                        router.replace('/')
+                    })
+                    .catch(fatalError)
+            }
+        }
+    })
 
     return router
 }
