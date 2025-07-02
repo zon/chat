@@ -2,6 +2,7 @@
 import { authCallback } from '@/lib/auth';
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router';
+import Status from '../Status.vue';
 
 const router = useRouter()
 
@@ -12,7 +13,5 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div id="signin">
-    <h1>Signing in</h1>
-  </div>
+  <Status title="Signing in..." />
 </template>
