@@ -4,19 +4,12 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { initRouter } from './router'
 import { fatalError } from './lib/error'
-import { auth } from './lib/auth'
 
 async function main() {
   try {
     await load()
   } catch (err) {
     unloadedErrorHandler(err)
-  }
-
-  try {
-    await start()
-  } catch (err) {
-    errorHandler(err)
   }
 }
 
@@ -27,10 +20,6 @@ async function load() {
   app.use(router)
   app.config.errorHandler = errorHandler
   app.mount('#app')
-}
-
-async function start() {
-  await auth()
 }
 
 function errorHandler(err: unknown) {

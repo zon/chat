@@ -1,4 +1,4 @@
-import { getAccessToken } from './auth'
+import { clearAuth, getAccessToken } from './auth'
 import { HOST } from './config'
 
 export class ResponseError extends Error {
@@ -81,6 +81,9 @@ async function fetchOkay(url: URL, init?: RequestInit) {
   if (res.status === 400) {
     const bad = await res.json()
     throw new BadRequestError(bad as BadRequest, res, url, init)
+  } else if (res.status === 401) {
+    await clearAuth()
+    location.reload()
   }
   if (!res.ok) {
     throw new ResponseError(res, url, init)
