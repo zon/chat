@@ -29,7 +29,7 @@ export async function connectNats() {
 }
 
 export async function closeNats() {
-  if (!nats.isClosed()) {
+  if (nats !== undefined && !nats.isClosed()) {
     nats.close()
   }
 }

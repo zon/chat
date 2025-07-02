@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory, type Router } from 'vue-router'
-import { authCallback, isAuthed } from './lib/auth'
-import { fatalError } from './lib/error'
+import { isAuthed } from './lib/auth'
 
 const authorizing = 'authorizing'
 
@@ -21,6 +20,11 @@ export function initRouter() {
             path: '/authorizing',
             component: () => import('./components/views/Authorizing.vue'),
             meta: { noAuth: true }
+        },
+        {
+            path: '/oidc/signin',
+            component: () => import('./components/views/OidcSignin.vue'),
+            meta: { noAuth: true }
         }
     ]
 
@@ -29,20 +33,10 @@ export function initRouter() {
         routes
     })
 
-    router.beforeEach(async (to, from) => {
+    router.beforeEach(to => {
         if (!to.meta.noAuth && !isAuthed()) {
             return { name: authorizing }
         }
-    })
-
-    router.addRoute({
-        path: '/oidc/signin',
-        component: {
-            created() {
-                authCallback(router).catch(fatalError)
-            }
-        },
-        meta: { noAuth: true }
     })
 
     return router
