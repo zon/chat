@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue'
 import type { Message } from '@/models/Message'
 import { formatDate } from '@/lib/date'
 
 const props = defineProps<{
   message: Message
+  observer: IntersectionObserver
 }>()
 
 const id = computed(() => `message-${props.message.id}`)
 const time = computed(() => formatDate(props.message.createdAt))
 const user = props.message.getUser()
+const element = useTemplateRef('main')
+
+onMounted(() => {
+  if (element.value !== null) {
+    props.observer.observe(element.value)
+  }
+})
+
+onUnmounted(() => {
+  if (element.value !== null) {
+    props.observer.unobserve(element.value)
+  }
+})
+
 </script>
 
 <template>
-  <div :id class="message">
+  <div ref="main" :id class="message" :data-id="props.message.id">
     <p class="details">
       <span class="user">{{ user.name }}</span> <span class="time">{{ time }}</span>
     </p>

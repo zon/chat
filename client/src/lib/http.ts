@@ -43,8 +43,13 @@ export interface BadRequest {
   Message: string
 }
 
-export async function get<T>(url: string) {
-  return request<T>(url, { method: 'GET' })
+export async function get<T>(url: string, params?: { [key: string]: string }) {
+  let searchUrl = url
+  if (params !== undefined) {
+    const search = new URLSearchParams(params)
+    searchUrl = `${searchUrl}?${search}`
+  }
+  return request<T>(searchUrl, { method: 'GET' })
 }
 
 export async function post<T>(url: string, body: any) {

@@ -1,9 +1,34 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import MessageView from '@/components/Message.vue'
 import NewMessageForm from '@/components/NewMessageForm.vue'
-import { sendMessage, updateMessages, messages } from '@/models/Message'
+import { sendMessage, updateMessages, messages, Message } from '@/models/Message'
 import { authUser } from '@/lib/auth'
+import { fatalError } from '@/lib/error'
+
+const lastMessage = computed(() => {
+  if (messages.length > 0) {
+    return messages[messages.length - 1]
+  } else {
+    return null
+  }
+})
+
+const observer = new IntersectionObserver((entries) => {
+  const last = lastMessage.value
+  if (last === null) {
+    return
+  }
+  for (const entry of entries) {
+    if (!entry.isIntersecting) {
+      continue
+    }
+    if (entry.target.getAttribute('data-id') === last.id.toString()) {
+      updateMessages(last.createdAt).catch(fatalError)
+    }
+    observer.unobserve(entry.target)
+  }
+})
 
 onMounted(async () => {
   await updateMessages()
@@ -26,7 +51,7 @@ async function onNewMessage(content: string) {
       </div>
     </div>
     <div id="messages">
-      <MessageView v-for="message in messages" :message />
+      <MessageView v-for="message in messages" :message :observer />
     </div>
     <div id="foot">
       <NewMessageForm @submit="onNewMessage" />

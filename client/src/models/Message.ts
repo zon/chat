@@ -45,8 +45,9 @@ export function subscribeMessages() {
   })
 }
 
-export async function updateMessages() {
-  const list = await get<MessageData[]>(path)
+export async function updateMessages(before?: Date) {
+  const query = before !== undefined ? { before: before.toISOString() } : undefined
+  const list = await get<MessageData[]>(path, query)
   for (const data of list) {
     addMessage(new Message(data))
   }
