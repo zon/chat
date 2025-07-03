@@ -4,6 +4,7 @@ import { get, put } from './http'
 import { closeNats, connectNats } from './nats'
 import { User, UserManager, WebStorageStateStore } from 'oidc-client-ts'
 import type { Router } from 'vue-router'
+import { fatalError } from './error'
 
 const fullScope = import.meta.env.VITE_ZITADEL_FULL_SCOPE === 'true'
 const zitadelProjectId = import.meta.env.VITE_ZITADEL_PROJECT_ID
@@ -25,7 +26,20 @@ const authManager = new UserManager({
   authority: import.meta.env.VITE_ZITADEL_ISSUER,
   client_id: import.meta.env.VITE_ZITADEL_CLIENT_ID,
   redirect_uri: `${window.location.origin}/oidc/signin`,
-  userStore: new WebStorageStateStore({ store: localStorage })
+  userStore: new WebStorageStateStore({ store: localStorage }),
+  monitorSession: true
+})
+
+authManager.events.addUserLoaded(async user => {
+  console.debug('user loaded')
+  oidcUser = user
+  await getAuthUser()
+})
+
+authManager.events.addUserUnloaded(async () => {
+  console.debug('user unloaded')
+  await clearAuth()
+  location.reload()
 })
 
 export async function auth() {
@@ -35,8 +49,6 @@ export async function auth() {
     return false
   }
   await getAuthUser()
-  const u = authUser.value
-  console.debug('previous session', u.id, u.name)
   return true
 }
 
@@ -45,12 +57,7 @@ export function isAuthed() {
 }
 
 export async function authCallback(router: Router) {
-  const user = await authManager.signinCallback()
-  oidcUser = user ?? null
-  await authManager.storeUser(oidcUser)
-  await getAuthUser()
-  const u = authUser.value
-  console.debug('new session', u.id, u.name)
+  await authManager.signinCallback()
   router.replace('/')
 }
 
@@ -77,5 +84,6 @@ export async function renameAuthUser(name: string) {
 async function getAuthUser() {
   const data = await get<UserData>('auth')
   authUser.value = new AuthUser(data)
+  console.debug('auth user', authUser.value.id, authUser.value.name)
   await connectNats()
 }
