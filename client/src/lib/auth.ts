@@ -5,7 +5,15 @@ import { closeNats, connectNats } from './nats'
 import { User, UserManager, WebStorageStateStore } from 'oidc-client-ts'
 import type { Router } from 'vue-router'
 
-const zitadelProjectResourceId = import.meta.env.VITE_ZITADEL_PROJECT_RESOURCE_ID
+const fullScope = import.meta.env.VITE_ZITADEL_FULL_SCOPE === 'true'
+const zitadelProjectId = import.meta.env.VITE_ZITADEL_PROJECT_ID
+const scope = [
+  'openid profile email offline_access',
+  ...(fullScope ? [
+    `urn:zitadel:iam:org:project:id:${zitadelProjectId}:aud`,
+    'urn:zitadel:iam:org:project:roles'
+  ] : [])
+].join(' ')
 
 let oidcUser: User | null = null
 
@@ -13,11 +21,7 @@ export const authUser = ref(new AuthUser())
 
 const authManager = new UserManager({
   response_type: 'code',
-  scope: [
-    'openid profile email offline_access',
-    `urn:zitadel:iam:org:project:id:${zitadelProjectResourceId}:aud`,
-    'urn:zitadel:iam:org:project:roles'
-  ].join(' '),
+  scope,
   authority: import.meta.env.VITE_ZITADEL_ISSUER,
   client_id: import.meta.env.VITE_ZITADEL_CLIENT_ID,
   redirect_uri: `${window.location.origin}/oidc/signin`,
