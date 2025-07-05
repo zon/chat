@@ -1,8 +1,9 @@
 import { authUser } from '@/lib/auth'
-import { get, put } from '@/lib/http'
-import { listen } from '@/lib/nats'
-import type { Subscription } from '@nats-io/nats-core'
+import { get } from '@/lib/http'
+import type { Msg, Subscription } from '@nats-io/nats-core'
 import { ref, type Ref } from 'vue'
+
+export const usersSubject = 'users'
 
 export interface UserData {
   ID: number
@@ -48,7 +49,6 @@ export class AuthUser extends User {
 const path = 'users'
 
 const users: { [id: string]: Ref<User> } = {}
-let userSubscription: Subscription
 
 export function getUser(id: number): Ref<User> {
   let user: Ref<User>
@@ -64,14 +64,13 @@ export function getUser(id: number): Ref<User> {
   return user
 }
 
-export function subscribeUsers() {
-  userSubscription = listen<UserData>('users', data => {
-    const user = new User(data)
-    setUser(user)
-    if (user.id === authUser.value.id) {
-      authUser.value = new AuthUser(data)
-    }
-  })
+export async function onUser(msg: Msg) {
+  const data = msg.json<UserData>()
+  const user = new User(data)
+  setUser(user)
+  if (user.id === authUser.value.id) {
+    authUser.value = new AuthUser(data)
+  }
 }
 
 function setUser(user: User) {

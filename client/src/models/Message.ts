@@ -1,8 +1,9 @@
 import { get, post } from '@/lib/http'
 import { getUser } from './User'
 import { reactive } from 'vue'
-import type { Subscription } from '@nats-io/nats-core'
-import { listen } from '@/lib/nats'
+import type { Msg, Subscription } from '@nats-io/nats-core'
+
+export const messagesSubject = 'messages'
 
 interface MessageData {
   ID: number
@@ -35,14 +36,11 @@ export class Message {
 
 const path = 'messages'
 
-let messagesSubscription: Subscription
-
 export const messages = reactive<Message[]>([])
 
-export function subscribeMessages() {
-  messagesSubscription = listen<MessageData>('messages', data => {
-    addMessage(new Message(data))
-  })
+export async function onMessage(msg: Msg) {
+  const data = msg.json<MessageData>()
+  addMessage(new Message(data))
 }
 
 export async function updateMessages(before?: Date) {

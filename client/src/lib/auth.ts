@@ -4,7 +4,6 @@ import { get, put } from './http'
 import { closeNats, connectNats } from './nats'
 import { User, UserManager, WebStorageStateStore } from 'oidc-client-ts'
 import type { Router } from 'vue-router'
-import { fatalError } from './error'
 
 const fullScope = import.meta.env.VITE_ZITADEL_FULL_SCOPE === 'true'
 const zitadelProjectId = import.meta.env.VITE_ZITADEL_PROJECT_ID

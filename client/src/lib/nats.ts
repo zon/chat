@@ -1,9 +1,10 @@
-import { wsconnect, type NatsConnection } from '@nats-io/nats-core'
+import { wsconnect, type Msg, type NatsConnection, type Status, type Subscription } from '@nats-io/nats-core'
 import { get } from './http'
-import { subscribeUsers } from '@/models/User'
-import { subscribeMessages } from '@/models/Message'
+import { addHandlers } from '@/handlers'
+import { ref, type Ref } from 'vue'
 
-export let nats: NatsConnection
+export let nats: Nats
+export const natsStatus: Ref<Status> = ref({type: 'close'})
 
 interface Credentials {
   Host: string
@@ -12,48 +13,82 @@ interface Credentials {
 }
 
 export async function connectNats() {
-  const credentials = await get<Credentials>('websocket')
-
   if (nats !== undefined) {
-    await closeNats()
+    await nats.drain()
   }
-
-  nats = await wsconnect({
-    servers: [credentials.Host],
-    user: credentials.User,
-    pass: credentials.Password
-  })
-
-  subscribeUsers()
-  subscribeMessages()
+  nats = await Nats.connect()
+  addHandlers(nats)
+  return nats
 }
 
 export async function closeNats() {
   if (nats !== undefined && !nats.isClosed()) {
-    nats.close()
+    await nats.drain()
   }
 }
 
-export function listen<T>(subject: string, callback: (msg: T) => void) {
-  return nats.subscribe(subject, {
-    callback: (err, msg) => {
-      if (err) {
-        console.error(`Error receiving message on subject ${subject}:`, err)
-        return
-      }
-      let data: T
-      try {
-        data = msg.json<T>()
-      } catch (err) {
-        console.error(`Error parsing message on subject ${subject}:`, err)
-        return
-      }
-      try {
-        callback(data)
-      } catch (err) {
-        console.error(`Error handling message on subject ${subject}:`, err)
-      }
+export class Nats {
+  private conn: NatsConnection
+  private handlers: Handler[]
+  private status: Promise<void> | null
+
+  constructor(conn: NatsConnection) {
+    this.conn = conn
+    this.handlers = []
+    this.status = this.statusLoop()
+  }
+
+  static async connect() {
+    const credentials = await get<Credentials>('websocket')
+    const conn = await wsconnect({
+      servers: [credentials.Host],
+      user: credentials.User,
+      pass: credentials.Password
+    })
+    return new this(conn)
+  }
+
+  isClosed() {
+    return this.conn.isClosed()
+  }
+
+  subscribe(subject: string, callback: (msg: Msg) => Promise<void>) {
+    var sub = this.conn.subscribe(subject)
+    this.handlers.push(new Handler(sub, callback))
+  }
+
+  private async statusLoop() {
+    for await (const status of this.conn.status()) {
+      console.info('nats status', status.type)
+      natsStatus.value = status
     }
-  })
+  }
+
+  drain() {
+    return this.conn.drain()
+  }
+
 }
 
+class Handler {
+  sub: Subscription
+  callback: (msg: Msg) => Promise<void>
+  loop: Promise<void>
+
+  constructor(sub: Subscription, callback: (msg: Msg) => Promise<void>) {
+    this.sub = sub
+    this.callback = callback
+    this.loop = this.msgLoop()
+  }
+
+  private async msgLoop() {
+    for await (const msg of this.sub) {
+      try {
+        await this.callback(msg)
+      } catch (err) {
+        console.error(`${this.sub} msg error:`, err)
+      }
+    }
+  }
+
+}
