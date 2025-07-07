@@ -17,27 +17,17 @@ const lastMessage = computed(() => {
   }
 })
 
-watch(nats.status, (status) => {
-  let text = '👻 '
-  let display = 'block'
-  switch (status.type) {
-    case "reconnect":
-      display = 'none'
-      break
-    case "ldm":
-    case "reconnecting":
-      text += 'Reconnecting...'
-      break
-    case "disconnect":
-      text += 'Disconnected'
-      break
-  }
-  const element = headError.value
-  if (element === null) {
+watch(nats.reconnecting, reconnecting => {
+  const error = headError.value
+  if (error === null) {
     return
   }
-  element.innerHTML = `<p>${text}</p>`
-  element.style.display = display
+  if (reconnecting) {
+    error.innerHTML = `<p>👻 Reconnecting...</p>`
+    error.style.display = 'block'
+  } else {
+    error.style.display = 'none'
+  }
 })
 
 const observer = new IntersectionObserver((entries) => {

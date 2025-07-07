@@ -27,7 +27,8 @@ export async function closeNats() {
 }
 
 export class Nats {
-  status: Ref<Status> = ref({type: 'close'})
+  status: Ref<Status>
+  reconnecting: Ref<boolean>
 
   private conn: NatsConnection
   private handlers: Handler[]
@@ -35,6 +36,7 @@ export class Nats {
 
   constructor(conn: NatsConnection) {
     this.status = ref({type: 'close'})
+    this.reconnecting = ref(false)
     this.conn = conn
     this.handlers = []
     this.statusLoop = this.startStatus()
@@ -63,6 +65,7 @@ export class Nats {
     for await (const status of this.conn.status()) {
       console.info('nats status', status.type)
       this.status.value = status
+      this.reconnecting.value = status.type !== 'reconnect'
     }
   }
 
