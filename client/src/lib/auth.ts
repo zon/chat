@@ -38,9 +38,8 @@ authManager.events.addUserLoaded(async user => {
 
 authManager.events.addUserUnloaded(async () => {
   console.debug('user unloaded')
-  await clearAuth()
-  fatalError(new Error('Session expired'))
-  // location.reload()
+  await clearAuth(true)
+  location.reload()
 })
 
 export async function auth() {
@@ -66,8 +65,10 @@ export function getAccessToken() {
   return oidcUser?.access_token ?? null
 }
 
-export async function clearAuth() {
-  await authManager.removeUser()
+export async function clearAuth(partial = false) {
+  if (!partial) {
+    await authManager.removeUser()
+  }
   oidcUser = null
   authUser.value = new AuthUser()
   await closeNats()
