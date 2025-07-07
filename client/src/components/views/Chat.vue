@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, useTemplateRef, watch } from 'vue'
 import MessageView from '@/components/Message.vue'
 import NewMessageForm from '@/components/NewMessageForm.vue'
-import { sendMessage, updateMessages, messages, Message } from '@/models/Message'
+import { sendMessage, updateMessages, messages } from '@/models/Message'
 import { authUser } from '@/lib/auth'
 import { fatalError } from '@/lib/error'
+import { nats } from '@/lib/nats'
+
+const headError = useTemplateRef('head-error')
 
 const lastMessage = computed(() => {
   if (messages.length > 0) {
@@ -12,6 +15,29 @@ const lastMessage = computed(() => {
   } else {
     return null
   }
+})
+
+watch(nats.status, (status) => {
+  let text = '👻 '
+  let display = 'block'
+  switch (status.type) {
+    case "reconnect":
+      display = 'none'
+      break
+    case "ldm":
+    case "reconnecting":
+      text += 'Reconnecting...'
+      break
+    case "disconnect":
+      text += 'Disconnected'
+      break
+  }
+  const element = headError.value
+  if (element === null) {
+    return
+  }
+  element.innerHTML = `<p>${text}</p>`
+  element.style.display = display
 })
 
 const observer = new IntersectionObserver((entries) => {
@@ -44,10 +70,13 @@ async function onNewMessage(content: string) {
   <div id="chat">
     <div id="head">
       <div id="menu">
-          <h1 id="title">Wurbs!</h1>
-          <p>
-            <RouterLink id="user" class="button" to="/auth">{{ authUser.name }}</RouterLink>
-          </p>
+        <h1 id="title">Wurbs!</h1>
+        <p>
+          <RouterLink id="user" class="button" to="/auth">{{ authUser.name }}</RouterLink>
+        </p>
+      </div>
+      <div ref="head-error" id="head-error" class="error">
+        <p>👻 Reconnecting...</p>
       </div>
     </div>
     <div id="messages">

@@ -4,7 +4,6 @@ import { addHandlers } from '@/handlers'
 import { ref, type Ref } from 'vue'
 
 export let nats: Nats
-export const natsStatus: Ref<Status> = ref({type: 'close'})
 
 interface Credentials {
   Host: string
@@ -28,14 +27,17 @@ export async function closeNats() {
 }
 
 export class Nats {
+  status: Ref<Status> = ref({type: 'close'})
+
   private conn: NatsConnection
   private handlers: Handler[]
-  private status: Promise<void> | null
+  private statusLoop: Promise<void> | null
 
   constructor(conn: NatsConnection) {
+    this.status = ref({type: 'close'})
     this.conn = conn
     this.handlers = []
-    this.status = this.statusLoop()
+    this.statusLoop = this.startStatus()
   }
 
   static async connect() {
@@ -57,15 +59,19 @@ export class Nats {
     this.handlers.push(new Handler(sub, callback))
   }
 
-  private async statusLoop() {
+  private async startStatus() {
     for await (const status of this.conn.status()) {
       console.info('nats status', status.type)
-      natsStatus.value = status
+      this.status.value = status
     }
   }
 
-  drain() {
-    return this.conn.drain()
+  async drain() {
+    await this.conn.drain()
+    for (const handler of this.handlers) {
+      await handler.loop
+    }
+    await this.statusLoop
   }
 
 }
