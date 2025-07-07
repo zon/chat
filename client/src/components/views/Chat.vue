@@ -22,12 +22,7 @@ watch(nats.reconnecting, reconnecting => {
   if (error === null) {
     return
   }
-  if (reconnecting) {
-    error.innerHTML = `<p>👻 Reconnecting...</p>`
-    error.style.display = 'block'
-  } else {
-    error.style.display = 'none'
-  }
+  error.style.display = reconnecting ? 'block' : 'none'
 })
 
 const observer = new IntersectionObserver((entries) => {

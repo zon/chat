@@ -65,7 +65,10 @@ export class Nats {
     for await (const status of this.conn.status()) {
       console.info('nats status', status.type)
       this.status.value = status
-      this.reconnecting.value = status.type !== 'reconnect'
+      this.reconnecting.value = (
+        status.type !== 'reconnect' &&
+        status.type !== 'ping'
+      )
     }
   }
 

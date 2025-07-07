@@ -57,5 +57,10 @@ func putUser(c *fiber.Ctx) error {
 		return err
 	}
 
+	err = Publish("users", user)
+	if err != nil {
+		return err
+	}
+
 	return c.JSON(user)
 }
