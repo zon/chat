@@ -12,6 +12,24 @@ type userPostBody struct {
 	Name string
 }
 
+func getUsers(c *fiber.Ctx) error {
+	aq := c.Query("after")
+	if aq == "" {
+		return fiber.ErrBadRequest
+	}
+	after, err := core.ParseTime(aq)
+	if err != nil {
+		return fiber.ErrBadRequest
+	}
+
+	var users []core.User
+	err = core.GetUsersAfter(after, &users)
+	if err != nil {
+		return err
+	}
+	return c.JSON(users)
+}
+
 func getUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {

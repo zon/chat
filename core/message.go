@@ -31,7 +31,7 @@ func GetMessagesBefore(since time.Time, messages *[]Message) error {
 }
 
 func GetMessagesAfter(since time.Time, messages *[]Message) error {
-	return DB.Order("created_at desc").Where("created_at > ?", since).Find(&messages).Error
+	return DB.Order("created_at desc").Where("created_at > ? OR updated_at > ?", since, since).Find(&messages).Error
 }
 
 func (m *Message) HtmlID() string {

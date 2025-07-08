@@ -35,7 +35,7 @@ const observer = new IntersectionObserver((entries) => {
       continue
     }
     if (entry.target.getAttribute('data-id') === last.id.toString()) {
-      updateMessages(last.createdAt).catch(fatalError)
+      updateMessages({before: last.createdAt}).catch(fatalError)
     }
     observer.unobserve(entry.target)
   }

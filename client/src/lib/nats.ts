@@ -3,6 +3,8 @@ import { get } from './http'
 import { addHandlers } from '@/handlers'
 import { ref, type Ref } from 'vue'
 
+const disconnectMargin = 2000
+
 export let nats: Nats
 
 interface Credentials {
@@ -29,6 +31,7 @@ export async function closeNats() {
 export class Nats {
   status: Ref<Status>
   reconnecting: Ref<boolean>
+  disconnected: Date
 
   private conn: NatsConnection
   private handlers: Handler[]
@@ -37,6 +40,7 @@ export class Nats {
   constructor(conn: NatsConnection) {
     this.status = ref({type: 'close'})
     this.reconnecting = ref(false)
+    this.disconnected = new Date()
     this.conn = conn
     this.handlers = []
     this.statusLoop = this.startStatus()
@@ -56,19 +60,31 @@ export class Nats {
     return this.conn.isClosed()
   }
 
-  subscribe(subject: string, callback: (msg: Msg) => Promise<void>) {
+  subscribe(subject: string, onMsg: (msg: Msg) => Promise<void>, onReconnect: (disconnected: Date) => Promise<void>) {
     var sub = this.conn.subscribe(subject)
-    this.handlers.push(new Handler(sub, callback))
+    this.handlers.push(new Handler(sub, onMsg, onReconnect))
   }
 
   private async startStatus() {
     for await (const status of this.conn.status()) {
       console.info('nats status', status.type)
       this.status.value = status
-      this.reconnecting.value = (
+      const connected = (
         status.type !== 'reconnect' &&
         status.type !== 'ping'
       )
+      if (connected === this.reconnecting.value) {
+        continue
+      }
+      this.reconnecting.value = connected
+      const since = new Date(this.disconnected.getTime() - disconnectMargin)
+      if (connected) {
+        for (const handler of this.handlers) {
+          await handler.onReconnect(since)
+        }
+      } else {
+        this.disconnected = new Date()
+      }
     }
   }
 
@@ -84,19 +100,21 @@ export class Nats {
 
 class Handler {
   sub: Subscription
-  callback: (msg: Msg) => Promise<void>
+  onMsg: (msg: Msg) => Promise<void>
+  onReconnect: (disconnected: Date) => Promise<void>
   loop: Promise<void>
 
-  constructor(sub: Subscription, callback: (msg: Msg) => Promise<void>) {
+  constructor(sub: Subscription, onMsg: (msg: Msg) => Promise<void>, onReconnect: (disconnected: Date) => Promise<void>) {
     this.sub = sub
-    this.callback = callback
+    this.onMsg = onMsg
+    this.onReconnect = onReconnect
     this.loop = this.msgLoop()
   }
 
   private async msgLoop() {
     for await (const msg of this.sub) {
       try {
-        await this.callback(msg)
+        await this.onMsg(msg)
       } catch (err) {
         console.error(`${this.sub} msg error:`, err)
       }

@@ -1,7 +1,7 @@
 import { get, post } from '@/lib/http'
 import { getUser } from './User'
 import { reactive } from 'vue'
-import type { Msg, Subscription } from '@nats-io/nats-core'
+import type { Msg } from '@nats-io/nats-core'
 
 export const messagesSubject = 'messages'
 
@@ -43,9 +43,15 @@ export async function onMessage(msg: Msg) {
   addMessage(new Message(data))
 }
 
-export async function updateMessages(before?: Date) {
-  const query = before !== undefined ? { before: before.toISOString() } : undefined
-  const list = await get<MessageData[]>(path, query)
+export function onMessageReconnect(disconnected: Date) {
+  return updateMessages({after: disconnected})
+}
+
+export async function updateMessages(query?: {before?: Date, after?: Date}) {
+  const list = await get<MessageData[]>(path, {
+    before: query?.before?.toISOString() || '',
+    after: query?.after?.toISOString() || ''
+  })
   for (const data of list) {
     addMessage(new Message(data))
   }

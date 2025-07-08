@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { authUser, renameAuthUser } from '@/lib/auth'
 import { BadRequestError } from '@/lib/http'
-import { AuthUser } from '@/models/User'
+import { User } from '@/models/User'
 import { router } from '@/router'
 import { onMounted, ref, watch, type Ref } from 'vue'
 
-const user = ref(new AuthUser())
+const user = ref(new User())
 const error: Ref<BadRequestError | null> = ref(null)
 
 onMounted(() => {
   user.value = authUser.value
 })
 
-watch(authUser, (newAuthUser) => {
-  user.value = newAuthUser
+watch(authUser, (newUser) => {
+  user.value = newUser
 })
 
 async function onSubmit() {

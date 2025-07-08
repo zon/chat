@@ -1,6 +1,6 @@
 import { authUser } from '@/lib/auth'
 import { get } from '@/lib/http'
-import type { Msg, Subscription } from '@nats-io/nats-core'
+import type { Msg } from '@nats-io/nats-core'
 import { ref, type Ref } from 'vue'
 
 export const usersSubject = 'users'
@@ -16,10 +16,16 @@ export interface UserData {
 export class User {
   id: number
   name: string
+  ready: boolean
+  createdAt: Date
+  updatedAt: Date
 
   constructor(data?: UserData) {
     this.id = data?.ID || 0
     this.name = data?.Name || ''
+    this.ready = data?.Ready || false
+    this.createdAt = new Date(data?.CreatedAt || 0)
+    this.updatedAt = new Date(data?.UpdatedAt || 0)
   }
 
   isEmpty() {
@@ -28,20 +34,6 @@ export class User {
 
   path() {
     return `${path}/${this.id}`
-  }
-
-}
-
-export class AuthUser extends User {
-  ready: boolean
-  createdAt: Date
-  updatedAt: Date
-
-  constructor(data?: UserData) {
-    super(data)
-    this.ready = data?.Ready || false
-    this.createdAt = new Date(data?.CreatedAt || 0)
-    this.updatedAt = new Date(data?.UpdatedAt || 0)
   }
 
 }
@@ -68,8 +60,18 @@ export async function onUser(msg: Msg) {
   const data = msg.json<UserData>()
   const user = new User(data)
   setUser(user)
-  if (user.id === authUser.value.id) {
-    authUser.value = new AuthUser(data)
+}
+
+export function onUserReconnect(disconnected: Date) {
+  return updateUsers(disconnected)
+}
+
+export async function updateUsers(after: Date) {
+  const list = await get<UserData[]>(path, {
+    after: after.toISOString()
+  })
+  for (const data of list) {
+    setUser(new User(data))
   }
 }
 
@@ -78,4 +80,7 @@ function setUser(user: User) {
     users[user.id] = ref(user)
   }
   users[user.id].value = user
+  if (user.id === authUser.value.id) {
+    authUser.value = user
+  }
 }

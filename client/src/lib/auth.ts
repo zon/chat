@@ -1,10 +1,9 @@
-import { AuthUser, type UserData } from '@/models/User'
+import { User, type UserData } from '@/models/User'
 import { ref } from 'vue'
 import { get, put } from './http'
 import { closeNats, connectNats } from './nats'
-import { User, UserManager, WebStorageStateStore } from 'oidc-client-ts'
+import { User as OidcUser, UserManager, WebStorageStateStore } from 'oidc-client-ts'
 import type { Router } from 'vue-router'
-import { fatalError } from './error'
 
 const fullScope = import.meta.env.VITE_ZITADEL_FULL_SCOPE === 'true'
 const zitadelProjectId = import.meta.env.VITE_ZITADEL_PROJECT_ID
@@ -16,9 +15,9 @@ const scope = [
   ] : [])
 ].join(' ')
 
-let oidcUser: User | null = null
+let oidcUser: OidcUser | null = null
 
-export const authUser = ref(new AuthUser())
+export const authUser = ref(new User())
 
 const authManager = new UserManager({
   response_type: 'code',
@@ -70,7 +69,7 @@ export async function clearAuth(partial = false) {
     await authManager.removeUser()
   }
   oidcUser = null
-  authUser.value = new AuthUser()
+  authUser.value = new User()
   await closeNats()
 }
 
@@ -79,13 +78,13 @@ export async function renameAuthUser(name: string) {
     return authUser
   }
   const data = await put<UserData>(authUser.value.path(), { Name: name })
-  authUser.value = new AuthUser(data)
+  authUser.value = new User(data)
   return authUser
 }
 
 async function getAuthUser() {
   const data = await get<UserData>('auth')
-  authUser.value = new AuthUser(data)
+  authUser.value = new User(data)
   console.debug('auth user', authUser.value.id, authUser.value.name)
   await connectNats()
 }

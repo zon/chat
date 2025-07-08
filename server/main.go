@@ -60,6 +60,7 @@ func main() {
 	app.Get("/websocket", getWebsocket)
 	app.Get("/messages", getMessages)
 	app.Post("/messages", postMessage)
+	app.Get("/users", getUsers)
 	app.Get("/users/:id", getUser)
 	app.Put("/users/:id", putUser)
 

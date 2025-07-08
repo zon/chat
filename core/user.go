@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/zon/hxcore"
@@ -48,6 +49,10 @@ func GetUser(id uint) (*User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func GetUsersAfter(since time.Time, users *[]User) error {
+	return DB.Order("updated_at desc").Where("updated_at > ?", since, since).Find(&users).Error
 }
 
 func UserUrl(id uint) string {
