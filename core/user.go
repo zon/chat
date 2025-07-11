@@ -52,7 +52,7 @@ func GetUser(id uint) (*User, error) {
 }
 
 func GetUsersAfter(since time.Time, users *[]User) error {
-	return DB.Order("updated_at desc").Where("updated_at > ?", since, since).Find(&users).Error
+	return DB.Order("updated_at desc").Where("updated_at > ?", since).Find(&users).Error
 }
 
 func UserUrl(id uint) string {

@@ -113,6 +113,7 @@ class Handler {
 
   private async msgLoop() {
     for await (const msg of this.sub) {
+      console.debug('msg', this.sub.getSubject())
       try {
         await this.onMsg(msg)
       } catch (err) {
