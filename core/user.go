@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/a-h/templ"
-	"github.com/zon/hxcore"
 	"gorm.io/gorm"
 )
 
@@ -18,8 +16,8 @@ type User struct {
 	Ready  bool
 }
 
-func (u *User) Url() templ.SafeURL {
-	return templ.SafeURL(UserUrl(u.ID))
+func (u *User) Url() string {
+	return UserUrl(u.ID)
 }
 
 func (u *User) Save() error {
@@ -35,7 +33,7 @@ func GetUserByAuthID(authID string) (*User, error) {
 	if user == nil || user.ID == 0 {
 		user = &User{
 			AuthID: authID,
-			Name:   hxcore.RandomString(16),
+			Name:   RandomString(16),
 		}
 		err = user.Save()
 	}
