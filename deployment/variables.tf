@@ -8,6 +8,11 @@ variable "cloudflare_account_id" {
   default = "1c0c0663dede5db6ca5239d0e62d86a5"
 }
 
+variable "b2_bucket_name" {
+  type    = string
+  default = "haralovich-wurbs"
+}
+
 variable "b2_domain" {
   type    = string
   default = "f005.backblazeb2.com"

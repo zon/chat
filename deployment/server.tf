@@ -1,5 +1,6 @@
 locals {
   namespace = kubernetes_namespace.server.metadata.0.name
+  server_domain = "api.${var.domain}"
 }
 
 resource "kubernetes_namespace" "server" {
@@ -16,6 +17,7 @@ resource "helm_release" "server" {
     image = {
       tag = file("${path.module}/../version")
     }
+    host = local.server_domain
   })]
   wait = false
 }
@@ -38,3 +40,19 @@ data "kubernetes_secret" "postgres" {
   }
 }
 
+resource "cloudflare_dns_record" "server" {
+  zone_id = cloudflare_zone.main.id
+  name    = local.server_domain
+  type    = "A"
+  content = local.ip
+  proxied = false
+  ttl     = 1
+}
+
+data "http" "ip" {
+  url = "https://ipv4.icanhazip.com/"
+}
+
+locals {
+  ip = trimspace(data.http.ip.response_body)
+}

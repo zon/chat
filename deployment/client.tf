@@ -1,5 +1,5 @@
 resource "b2_bucket" "client" {
-  bucket_name = "haralovich-wurbs"
+  bucket_name = var.b2_bucket_name
   bucket_type = "allPublic"
 }
 
@@ -10,9 +10,9 @@ resource "cloudflare_zone" "main" {
   name = var.domain
 }
 
-resource "cloudflare_dns_record" "main" {
+resource "cloudflare_dns_record" "client" {
   zone_id = cloudflare_zone.main.id
-  name    = "@"
+  name    = var.domain
   type    = "CNAME"
   content = var.b2_domain
   proxied = true
