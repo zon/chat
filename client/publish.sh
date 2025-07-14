@@ -2,8 +2,6 @@
 
 set -e
 
-bun run build
+VITE_REST_HOST=https://api.wurbs.chat bun run build
 
 b2 sync --delete --replace-newer dist b2://haralovich-wurbs/
-
-# https://f005.backblazeb2.com/file/haralovich-wurbs/index.html
