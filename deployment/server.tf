@@ -37,3 +37,4 @@ data "kubernetes_secret" "postgres" {
     namespace = "postgres"
   }
 }
+
