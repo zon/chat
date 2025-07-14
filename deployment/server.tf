@@ -1,5 +1,5 @@
 locals {
-  namespace = kubernetes_namespace.server.metadata.0.name
+  namespace     = kubernetes_namespace.server.metadata.0.name
   server_domain = "api.${var.domain}"
 }
 
@@ -55,4 +55,15 @@ data "http" "ip" {
 
 locals {
   ip = trimspace(data.http.ip.response_body)
+}
+
+resource "kubernetes_secret" "zitadel" {
+  metadata {
+    name      = "zitadel"
+    namespace = local.namespace
+  }
+
+  data = {
+    "token.json" = file("${path.module}/../server/token.json")
+  }
 }

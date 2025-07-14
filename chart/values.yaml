@@ -13,5 +13,15 @@ postgres:
     secret: postgres
     key: password
   database: wurbs
+nats:
+  secret: nats
+  keys:
+    url: url
+    password: password
+websocket:
+  secret: websocket
+  keys:
+    host: host
+    user: user
+    password: password
 host: wurbs.chat
-authHost: who.wurbs.chat

@@ -13,6 +13,10 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      volumes:
+      - name: zitadel
+        secret:
+          secretName: zitadel
       containers:
       - name: main
         image: {{ .Values.image.repo }}:{{ .Values.image.tag }}
@@ -34,11 +38,41 @@ spec:
           value: {{ .Values.memcached.host }}
         - name: MEMCACHED_PORT
           value: "{{ .Values.memcached.port }}"
+        - name: WURBS_NATS_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.nats.secret }}
+              key: {{ .Values.nats.keys.url }}
+        - name: WURBS_NATS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.nats.secret }}
+              key: {{ .Values.nats.keys.password }}
+        - name: WURBS_WS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.websocket.secret }}
+              key: {{ .Values.websocket.keys.host }}
+        - name: WURBS_WS_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.websocket.secret }}
+              key: {{ .Values.websocket.keys.user }}
+        - name: WURBS_WS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.websocket.secret }}
+              key: {{ .Values.websocket.keys.password }}
         - name: WURBS_URL
           value: https://{{ .Values.host }}
-        - name: WHO_THIS_URL
-          value: https://{{ .Values.authHost }}
         - name: PORT
           value: "{{ .Values.port }}"
+        volumeMounts:
+        - name: zitadel
+          readOnly: true
+          mountPath: "/etc/wurbs"
+        command:
+        - wurbs-server
+        - /etc/wurbs/token.json
         ports:
         - containerPort: {{ .Values.port }}

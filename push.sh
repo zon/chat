@@ -7,8 +7,8 @@ VERSION=$(cat ./version)
 SUFFIX=""
 TAG="$VERSION$SUFFIX"
 
-podman build --tag $IMAGE:$TAG .
-podman tag $IMAGE:$TAG $IMAGE:latest
+docker build --platform linux/amd64 --tag $IMAGE:$TAG .
+docker tag $IMAGE:$TAG $IMAGE:latest
 
-podman push $IMAGE:$TAG
-podman push $IMAGE:latest
+docker push $IMAGE:$TAG
+docker push $IMAGE:latest
