@@ -34,10 +34,6 @@ spec:
               key: {{ .Values.postgres.password.key }}
         - name: PGDATABASE
           value: {{ .Values.postgres.database }}
-        - name: MEMCACHED_HOST
-          value: {{ .Values.memcached.host }}
-        - name: MEMCACHED_PORT
-          value: "{{ .Values.memcached.port }}"
         - name: WURBS_NATS_URL
           valueFrom:
             secretKeyRef:

@@ -5,8 +5,6 @@ go 1.24.5
 require (
 	github.com/alecthomas/kong v1.12.0
 	github.com/gofiber/fiber/v2 v2.52.8
-	github.com/gofiber/storage/memcache v1.3.7
-	github.com/gofiber/storage/sqlite3 v1.3.8
 	github.com/nats-io/nats.go v1.43.0
 	github.com/stretchr/testify v1.10.0
 	github.com/yuin/goldmark v1.7.12
@@ -18,12 +16,10 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
-	github.com/bradfitz/gomemcache v0.0.0-20250403215159-8d39553ac7cf // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-jose/go-jose/v4 v4.1.1 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
