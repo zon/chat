@@ -26,6 +26,9 @@ func InitDB() error {
 	user := os.Getenv("PGUSER")
 	password := os.Getenv("PGPASSWORD")
 	database := os.Getenv("PGDATABASE")
+	if database == "" {
+		database = "wurbs"
+	}
 
 	var dialector gorm.Dialector
 	if host != "" {

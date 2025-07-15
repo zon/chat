@@ -2,4 +2,4 @@
 
 set -e
 
-air server/token.json
+PGDATABASE=wurbs_dev air server/token.json

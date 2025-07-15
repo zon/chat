@@ -10,6 +10,9 @@ const error: Ref<BadRequestError | null> = ref(null)
 
 onMounted(() => {
   user.value = authUser.value
+  if (!user.value.ready) {
+    user.value.name = ''
+  }
 })
 
 watch(authUser, (newUser) => {
@@ -44,8 +47,7 @@ async function onSubmit() {
       <form @submit.prevent="onSubmit">
         <div class="field">
           <label for="name">Name</label>
-          <input v-if="user.ready" id="name" name="name" type="text" v-model="user.name" />
-          <input v-else id="name" name="name" type="text" />
+          <input id="name" name="name" type="text" v-model="user.name" />
         </div>
         <div v-if="error" id="error">
           <p>{{ error.message }}</p>
