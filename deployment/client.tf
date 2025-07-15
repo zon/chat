@@ -1,3 +1,7 @@
+locals {
+  bucket_path = "/file/${b2_bucket.client.bucket_name}"
+}
+
 resource "b2_bucket" "client" {
   bucket_name = var.b2_bucket_name
   bucket_type = "allPublic"
@@ -26,18 +30,6 @@ resource "cloudflare_ruleset" "main" {
   phase   = "http_request_transform"
 
   rules = [{
-    ref         = "catch-all"
-    description = "Catch all"
-    expression  = "(not starts_with(http.request.uri.path, \"/assets\") and http.host eq \"${var.domain}\")"
-    action      = "rewrite"
-    action_parameters = {
-      uri = {
-        path = {
-          value = "/file/${b2_bucket.client.bucket_name}/index.html"
-        }
-      }
-    }
-    }, {
     ref         = "assets"
     description = "Assets"
     expression  = "(starts_with(http.request.uri.path, \"/assets\") and http.host eq \"${var.domain}\")"
@@ -45,7 +37,31 @@ resource "cloudflare_ruleset" "main" {
     action_parameters = {
       uri = {
         path = {
-          expression = "concat(\"/file/${b2_bucket.client.bucket_name}\", http.request.uri.path)"
+          expression = "concat(\"${local.bucket_path}\", http.request.uri.path)"
+        }
+      }
+    }
+  }, {
+    ref         = "favicon"
+    description = "Favicon"
+    expression  = "(http.request.uri.path eq \"/favicon.ico\" and http.host eq \"${var.domain}\")"
+    action      = "rewrite"
+    action_parameters = {
+      uri = {
+        path = {
+          value = "/${local.bucket_path}/favicon.ico"
+        }
+      }
+    }
+  }, {
+    ref         = "catch-all"
+    description = "Catch all"
+    expression  = "(http.host eq \"${var.domain}\")"
+    action      = "rewrite"
+    action_parameters = {
+      uri = {
+        path = {
+          value = "${local.bucket_path}/index.html"
         }
       }
     }
