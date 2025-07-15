@@ -56,7 +56,7 @@ resource "cloudflare_ruleset" "main" {
   }, {
     ref         = "catch-all"
     description = "Catch all"
-    expression  = "(http.host eq \"${var.domain}\")"
+    expression  = "(http.host eq \"${var.domain}\" and not starts_with(http.request.uri.path, \"/assets\") and http.request.uri.path ne \"/favicon.ico\")"
     action      = "rewrite"
     action_parameters = {
       uri = {
