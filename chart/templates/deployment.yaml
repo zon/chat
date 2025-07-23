@@ -34,27 +34,27 @@ spec:
               key: {{ .Values.postgres.password.key }}
         - name: PGDATABASE
           value: {{ .Values.postgres.database }}
-        - name: WURBS_NATS_URL
+        - name: NATS_URL
           valueFrom:
             secretKeyRef:
               name: {{ .Values.nats.secret }}
               key: {{ .Values.nats.keys.url }}
-        - name: WURBS_NATS_PASSWORD
+        - name: NATS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.nats.secret }}
               key: {{ .Values.nats.keys.password }}
-        - name: WURBS_WS_HOST
+        - name: WS_HOST
           valueFrom:
             secretKeyRef:
               name: {{ .Values.websocket.secret }}
               key: {{ .Values.websocket.keys.host }}
-        - name: WURBS_WS_USER
+        - name: WS_USER
           valueFrom:
             secretKeyRef:
               name: {{ .Values.websocket.secret }}
               key: {{ .Values.websocket.keys.user }}
-        - name: WURBS_WS_PASSWORD
+        - name: WS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.websocket.secret }}
