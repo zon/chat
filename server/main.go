@@ -22,7 +22,7 @@ func main() {
 	ktx := kong.Parse(&cli)
 	ktx.FatalIfErrorf(ktx.Error)
 
-	err := LoadConfig()
+	err := gonf.LoadConfig()
 	if err != nil {
 		slog.Error("config", "error", err)
 		os.Exit(1)
@@ -40,7 +40,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = Connect()
+	err = gonf.Connect()
 	if err != nil {
 		slog.Error("nats connection failed", "error", err)
 		os.Exit(1)
@@ -57,7 +57,7 @@ func main() {
 	app.Use(gonf.AuthMiddleware)
 
 	app.Get("/auth", gonf.GetAuth)
-	app.Get("/websocket", getWebsocket)
+	app.Get("/websocket", gonf.GetWebsocket)
 	app.Get("/messages", getMessages)
 	app.Post("/messages", postMessage)
 	app.Get("/users", getUsers)

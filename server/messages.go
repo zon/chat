@@ -70,7 +70,7 @@ func postMessage(c *fiber.Ctx) error {
 		return err
 	}
 
-	err = Publish("messages", record)
+	err = gonf.Publish("messages", record)
 	if err != nil {
 		return err
 	}
