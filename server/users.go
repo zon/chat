@@ -70,7 +70,7 @@ func putUser(c *fiber.Ctx) error {
 	user.Ready = true
 	err = user.Save()
 	if errors.Is(err, gorm.ErrDuplicatedKey) {
-		return respondBad(c, Duplicate, "Duplicate user name")
+		return gonf.RespondBad(c, gonf.Duplicate, "Duplicate user name")
 	}
 	if err != nil {
 		return err
