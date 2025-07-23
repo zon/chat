@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/zon/chat/core"
+	"github.com/zon/gonf"
 	"gorm.io/gorm"
 )
 
@@ -22,8 +23,8 @@ func getUsers(c *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	var users []core.User
-	err = core.GetUsersAfter(after, &users)
+	var users []gonf.User
+	err = gonf.GetUsersAfter(after, &users)
 	if err != nil {
 		return err
 	}
@@ -35,7 +36,7 @@ func getUser(c *fiber.Ctx) error {
 	if err != nil {
 		return fiber.ErrBadRequest
 	}
-	user, err := core.GetUser(uint(id))
+	user, err := gonf.GetUser(uint(id))
 	if err != nil {
 		return err
 	}
@@ -51,7 +52,7 @@ func putUser(c *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	user, err := authUser(c)
+	user, err := gonf.AuthUser(c)
 	if err != nil {
 		return err
 	}

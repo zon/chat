@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/zon/chat/core"
+	"github.com/zon/gonf"
 )
 
 func getMessages(c *fiber.Ctx) error {
@@ -44,7 +45,7 @@ func getMessages(c *fiber.Ctx) error {
 }
 
 func postMessage(c *fiber.Ctx) error {
-	user, err := authUser(c)
+	user, err := gonf.AuthUser(c)
 	if err != nil {
 		return err
 	}

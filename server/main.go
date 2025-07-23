@@ -6,10 +6,10 @@ import (
 
 	"github.com/alecthomas/kong"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/zon/chat/core"
+	"github.com/zon/gonf"
 )
 
 var cli struct {
@@ -34,7 +34,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = initAuthMiddleware(cli.Subdomain, cli.Key)
+	err = gonf.InitAuthMiddleware(cli.Subdomain, cli.Key)
 	if err != nil {
 		slog.Error("zitadel auth middleware could not initialize", "error", err)
 		os.Exit(1)
@@ -54,9 +54,9 @@ func main() {
 		return c.JSON("ok")
 	})
 
-	app.Use(adaptor.HTTPMiddleware(authMiddleware.RequireAuthorization()))
+	app.Use(gonf.AuthMiddleware)
 
-	app.Get("/auth", getAuth)
+	app.Get("/auth", gonf.GetAuth)
 	app.Get("/websocket", getWebsocket)
 	app.Get("/messages", getMessages)
 	app.Post("/messages", postMessage)

@@ -3,16 +3,17 @@ module github.com/zon/chat
 go 1.24.5
 
 require (
+	github.com/a-h/templ v0.3.920
 	github.com/alecthomas/kong v1.12.0
-	github.com/gofiber/fiber/v2 v2.52.8
+	github.com/gofiber/fiber/v2 v2.52.9
 	github.com/nats-io/nats.go v1.43.0
 	github.com/stretchr/testify v1.10.0
 	github.com/yuin/goldmark v1.7.12
-	github.com/zitadel/zitadel-go/v3 v3.6.1
-	gorm.io/driver/postgres v1.6.0
-	gorm.io/driver/sqlite v1.6.0
+	github.com/zon/gonf v0.0.0-20250723153004-6adb4865e600
 	gorm.io/gorm v1.30.0
 )
+
+replace github.com/zon/gonf => ../gonf
 
 require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
@@ -44,6 +45,7 @@ require (
 	github.com/zitadel/logging v0.6.2 // indirect
 	github.com/zitadel/oidc/v3 v3.39.1 // indirect
 	github.com/zitadel/schema v1.3.1 // indirect
+	github.com/zitadel/zitadel-go/v3 v3.6.1 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.37.0 // indirect
 	go.opentelemetry.io/otel/metric v1.37.0 // indirect
@@ -56,4 +58,6 @@ require (
 	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gorm.io/driver/postgres v1.6.0 // indirect
+	gorm.io/driver/sqlite v1.6.0 // indirect
 )

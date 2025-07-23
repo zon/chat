@@ -1,52 +1,22 @@
 package core
 
 import (
-	"fmt"
-	"os"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"github.com/zon/gonf"
 )
 
-const dbFile string = "chat.db"
-
-var DB *gorm.DB
-
-func AutoMigrate(db *gorm.DB) error {
-	return db.AutoMigrate(
-		&Message{},
-		&User{},
-	)
-}
+const defaultDatabase = "chat"
+const sqliteFile = defaultDatabase + ".db"
 
 func InitDB() error {
-	host := os.Getenv("PGHOST")
-	port := os.Getenv("PGPORT")
-	user := os.Getenv("PGUSER")
-	password := os.Getenv("PGPASSWORD")
-	database := os.Getenv("PGDATABASE")
-	if database == "" {
-		database = "wurbs"
-	}
+	return gonf.InitDB(defaultDatabase, sqliteFile)
+}
 
-	var dialector gorm.Dialector
-	if host != "" {
-		dsn := fmt.Sprintf(
-			"host=%s port=%s user=%s password=%s dbname=%s",
-			host, port, user, password, database,
-		)
-		dialector = postgres.Open(dsn)
-	} else {
-		dialector = sqlite.Open(dbFile)
-	}
-
-	gdb, err := gorm.Open(dialector, &gorm.Config{TranslateError: true})
+func AutoMigrate() error {
+	err := gonf.AutoMigrate()
 	if err != nil {
 		return err
 	}
-
-	DB = gdb
-
-	return AutoMigrate(DB)
+	return gonf.DB.AutoMigrate(
+		&Message{},
+	)
 }
