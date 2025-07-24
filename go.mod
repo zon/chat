@@ -11,7 +11,7 @@ require (
 	gorm.io/gorm v1.30.0
 )
 
-// replace github.com/zon/gonf => ../gonf
+replace github.com/zon/gonf => ../gonf
 
 require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
@@ -33,6 +33,9 @@ require (
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mattn/go-sqlite3 v1.14.28 // indirect
 	github.com/muhlemmer/gu v0.3.1 // indirect
+	github.com/nats-io/nats.go v1.43.0 // indirect
+	github.com/nats-io/nkeys v0.4.11 // indirect
+	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
