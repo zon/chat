@@ -13,7 +13,7 @@ func getMessages(c *fiber.Ctx) error {
 
 	bq := c.Query("before")
 	if bq != "" {
-		before, err := core.ParseTime(bq)
+		before, err := gonf.ParseTime(bq)
 		if err != nil {
 			return fiber.ErrBadRequest
 		}
@@ -26,7 +26,7 @@ func getMessages(c *fiber.Ctx) error {
 
 	aq := c.Query("after")
 	if aq != "" {
-		after, err := core.ParseTime(aq)
+		after, err := gonf.ParseTime(aq)
 		if err != nil {
 			return fiber.ErrBadRequest
 		}

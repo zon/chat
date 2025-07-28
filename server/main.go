@@ -56,13 +56,9 @@ func main() {
 
 	app.Use(gonf.AuthMiddleware)
 
-	app.Get("/auth", gonf.GetAuth)
-	app.Get("/websocket", gonf.GetWebsocket)
+	gonf.AddRoutes(app)
 	app.Get("/messages", getMessages)
 	app.Post("/messages", postMessage)
-	app.Get("/users", getUsers)
-	app.Get("/users/:id", getUser)
-	app.Put("/users/:id", putUser)
 
 	err = app.Listen(":" + cli.Port)
 	if err != nil {
